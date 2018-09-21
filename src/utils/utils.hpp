@@ -6,13 +6,13 @@
 #include <iostream>
 #include <sstream>
 #include <sys/stat.h>
-#include "string.h"
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include "string.h"
 
-inline std::string * clearString(std::string * str) {
-    for (char &c : *str) {
+inline std::string clearString(std::string str) {
+    for (char &c : str) {
         if ((c >= ' ' && c <= '/') || (c >= ':' && c <= '@') || (c >= '[' && c <= '`')) {
             c = '_';
         }

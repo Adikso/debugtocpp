@@ -25,11 +25,11 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
     std::stringstream out;
     out << "// Generated automatically by debugtocpp\n\n";
 
-    auto * compilableClassName = clearString(new std::string(cls->name));
+    auto compilableClassName = clearString(cls->name);
 
     if (config.addGuards) {
-        out << "#ifndef " << compilableClassName->c_str() << "_H\n"
-               "#define " << compilableClassName->c_str() << "_H\n\n";
+        out << "#ifndef " << compilableClassName.c_str() << "_H\n"
+               "#define " << compilableClassName.c_str() << "_H\n\n";
     }
 
     if (config.addIncludesOrDeclarations) {
@@ -38,12 +38,12 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
 //                continue;
 //            }
 
-            auto * compilableDependentName = clearString(new std::string(type));
-            std::string classDisplayName = config.compilable ? *compilableDependentName : type;
+            auto compilableDependentName = clearString(type);
+            std::string classDisplayName = config.compilable ? compilableDependentName : type;
 
             // Add #include only for base class to avoid circular dependency
             if (!cls->baseTypes.empty() && type == cls->baseTypes[0]->name && !config.useOnlyForwardDeclarations) {
-                out << "#include \"" << compilableDependentName->c_str() << ".hpp\"\n";
+                out << "#include \"" << compilableDependentName.c_str() << ".hpp\"\n";
             } else {
                 out << "class " << classDisplayName.c_str() << ";\n";
             }
@@ -54,17 +54,17 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
     }
 
     // Show original names for filtered class names
-    if (*compilableClassName != cls->name) {
+    if (compilableClassName != cls->name) {
         out << "// Original Name: " << cls->name << "\n";
     }
 
-    std::string classDisplayName = config.compilable ? *compilableClassName : cls->name;
+    std::string classDisplayName = config.compilable ? compilableClassName : cls->name;
     out << "class " << classDisplayName.c_str();
 
     // Show base class
     if (!cls->baseTypes.empty()) {
-        auto * compilableBaseClassName = clearString(new std::string(cls->baseTypes[0]->name));
-        std::string baseClassDisplayName = config.compilable ? *compilableBaseClassName : cls->baseTypes[0]->name;
+        auto compilableBaseClassName = clearString(cls->baseTypes[0]->name);
+        std::string baseClassDisplayName = config.compilable ? compilableBaseClassName : cls->baseTypes[0]->name;
 
         out << " : public " << baseClassDisplayName.c_str();
     }
@@ -76,8 +76,11 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             continue;
         }
 
-        auto * compilableTypeName = clearString(new std::string(field->typePtr->type));
-        std::string typeDisplayName = (config.compilable ? *compilableTypeName : field->typePtr->type) + (field->typePtr->isPointer ? " *" : "");
+        auto typeName = field->typePtr->type;
+        if (config.compilable)
+            typeName = clearString(typeName);
+
+        std::string typeDisplayName = typeName + (field->typePtr->isPointer ? " *" : "");
 
         // [static] TYPE NAME;
         out << indent
@@ -93,9 +96,8 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
 
     for (auto method : (config.showAsPointers ? cls->fullyDefinedMethods : cls->allMethods)) {
         std::string methodName = getName(method->name, cls);
-
         if (config.compilable) {
-            methodName = *clearString(new std::string(methodName));
+            methodName = clearString(methodName);
         }
 
         if (config.compilable && (methodName.find_first_of(invalidCharacters) !=
@@ -104,12 +106,9 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             out << "//";
         }
 
-        auto * compilableTypeName = clearString(new std::string(method->returnType->type));
-        std::string typeDisplayName;
+        std::string typeDisplayName = method->returnType->type;
         if (config.compilable && method->returnType->isPointer) {
-            typeDisplayName = *compilableTypeName;
-        } else {
-            typeDisplayName = method->returnType->type;
+            typeDisplayName = clearString(typeDisplayName);
         }
 
         typeDisplayName += (method->returnType->isPointer && !method->returnType->type.empty() ? " *" : "");
@@ -155,9 +154,11 @@ void CodeClassDumper::dumpPointers(std::stringstream &out, Type *cls, DumpConfig
             continue;
         }
 
-        auto * compilableTypeName = clearString(new std::string(field->typePtr->type));
-        std::string typeDisplayName = (config.compilable ? *compilableTypeName : field->typePtr->type) + (field->typePtr->isPointer ? " *" : "");
+        auto typeName = field->typePtr->type;
+        if (config.compilable)
+            typeName = clearString(typeName);
 
+        std::string typeDisplayName = typeName + (field->typePtr->isPointer ? " *" : "");
         std::string fieldName = config.showAsPointers ? field->name : getName(field->name, cls);
 
         // [static] TYPE NAME;

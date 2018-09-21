@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
 
         for (int i = 0; i < dumpOut.size(); i++) {
             std::ofstream file;
-            file.open(outputPath + "/" + *clearString(new std::string(types[i]->name)) + "." + extension);
+            file.open(outputPath + "/" + clearString(types[i]->name) + "." + extension);
 
             file << dumpOut[i];
             file.close();
