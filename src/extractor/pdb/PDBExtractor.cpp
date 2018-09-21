@@ -46,6 +46,7 @@ Type *PDBExtractor::getType(std::string name) {
             if (pdbField.field_type == PDBFIELD_BASE) {
                 auto pdbBaseType = new PDBUniversalType(pdbField.Member.type_def);
                 type->baseTypes.push_back(new Type(pdbBaseType->getName()));
+                delete(pdbBaseType);
                 continue;
             }
 
@@ -173,12 +174,14 @@ TypePtr * PDBExtractor::getReturnTypeStr(PDBTypeDef *type) {
 
     auto pdbType = new PDBUniversalType(type);
     if (!pdbType->isType()) {
+        delete(pdbType);
         return new TypePtr("int", false);
     }
 
     std::string name = pdbType->getName();
     allDependentClasses.push_back(name);
 
+    delete(pdbType);
     return new TypePtr(name, true);
 }
 
@@ -189,11 +192,13 @@ PDBTypeDef *PDBExtractor::findFullDeclaration(std::string name) {
         auto pdbType = new PDBUniversalType(type.second);
         if (pdbType->isType()) {
             if (pdbType->getName() != name) {
+                delete(pdbType);
                 continue;
             }
 
             last = type.second;
         }
+        delete(pdbType);
     }
 
     return last;
@@ -205,10 +210,12 @@ std::list<std::string> PDBExtractor::getTypesList(bool showStructs) {
     for (auto &type : pdb.get_types_container()->types_fully_defined) {
         auto pdbType = new PDBUniversalType(type.second);
         if (!pdbType->isType() || (pdbType->getPDBType() == PDBTYPE_STRUCT && !showStructs)) {
+            delete(pdbType);
             continue;
         }
 
         names.emplace_back(pdbType->getName());
+        delete(pdbType);
     }
 
     names.sort();
