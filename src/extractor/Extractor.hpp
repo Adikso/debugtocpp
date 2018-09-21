@@ -13,17 +13,6 @@ enum ExtractResult {
     ERR_FILE_OPEN, INVALID_FILE, UNSUPPORTED_VERSION, OK, UNKNOWN_ERROR
 };
 
-class DebugExtractException : public std::exception {
-public:
-    std::string msg;
-
-    virtual std::string reason() const noexcept {
-        return msg;
-    }
-
-    explicit DebugExtractException(const std::string &msg) : msg(msg) {}
-};
-
 class Extractor {
 public:
     virtual ExtractResult load(std::string filename, int image_base) = 0;
