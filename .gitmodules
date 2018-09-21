@@ -1,0 +1,6 @@
+[submodule "libelfin"]
+	path = libelfin
+	url = https://github.com/aclements/libelfin.git
+[submodule "retdec"]
+	path = retdec
+	url = https://github.com/Adikso/retdec
