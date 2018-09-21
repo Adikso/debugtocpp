@@ -7,6 +7,9 @@
 #include <sstream>
 #include <sys/stat.h>
 #include "string.h"
+#include <vector>
+#include <algorithm>
+#include <iterator>
 
 inline std::string * clearString(std::string * str) {
     for (char &c : *str) {
@@ -39,16 +42,16 @@ inline int isDirectory(const std::string &path) {
 
 // This is hack TODO
 inline std::string demangleTypedef(const std::string &mangled) {
-    std::string prefix = "_ZTI";
-    if (mangled.rfind(prefix, 0) == 0) {
+    std::string prefix = "_ZT";
+    std::string prefix2 = "_ZN";
+    if (mangled.rfind(prefix, 0) == 0 || mangled.rfind(prefix2, 0) == 0) {
         std::string rest = mangled.substr(prefix.size()); // Get everything without prefix
 
-        bool nspace = rest[0] == 'N';
-        if (nspace) {
+        while (!std::isdigit(rest[0])) {
             rest = rest.substr(1);
         }
 
-        std::stringstream out;
+        std::vector<std::string> parts;
 
         while (true) {
             std::stringstream ss;
@@ -56,13 +59,25 @@ inline std::string demangleTypedef(const std::string &mangled) {
             int length;
             ss >> length;
 
-            if (length == 0)
+            if (length == 0 || rest.empty())
                 break;
 
-            out << rest.substr(std::to_string(length).length(), length);
-            rest = rest.substr(std::to_string(length).length() + length);
+            std::string part = rest.substr(std::to_string(length).length(), length);
+            parts.push_back(part);
 
-            if (std::isdigit(rest[0]) && nspace) {
+            rest = rest.substr(std::to_string(length).length() + length);
+        }
+
+        if (mangled.rfind(prefix2, 0) == 0) {
+            parts.pop_back();
+        }
+
+        std::stringstream out;
+
+        for (int i = 0; i < parts.size(); i++) {
+            out << parts[i];
+
+            if (i != parts.size() - 1) {
                 out << "::";
             }
         }
