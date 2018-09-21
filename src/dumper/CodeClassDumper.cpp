@@ -76,16 +76,12 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             continue;
         }
 
-        auto typeName = field->typePtr->type;
-        if (config.compilable)
-            typeName = clearString(typeName);
-
-        std::string typeDisplayName = typeName + (field->typePtr->isPointer ? " *" : "");
-
         // [static] TYPE NAME;
         out << indent
             << (field->isStatic ? "static " : "")
-            << typeDisplayName << " " << (config.showAsPointers && field->isStatic ? "* " : "")
+            << printType(field->typePtr, config.compilable)
+            << " "
+            << (config.showAsPointers && field->isStatic ? "* " : "")
             << getName(field->name, cls) << ";\n";
     }
 
@@ -106,12 +102,7 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             out << "//";
         }
 
-        std::string typeDisplayName = method->returnType->type;
-        if (config.compilable && method->returnType->isPointer) {
-            typeDisplayName = clearString(typeDisplayName);
-        }
-
-        typeDisplayName += (method->returnType->isPointer && !method->returnType->type.empty() ? " *" : "");
+        auto typeDisplayName = printType(method->returnType, config.compilable);
 
         if (config.showAsPointers) {
             if (methodName[0] == '~') {
@@ -131,7 +122,7 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
                 << methodName.c_str() << "(";
         }
 
-        dumpMethodArgs(out, method, config.showAsPointers);
+        dumpMethodArgs(out, method, config.showAsPointers, config);
 
         out << ");\n";
     }
@@ -154,11 +145,7 @@ void CodeClassDumper::dumpPointers(std::stringstream &out, Type *cls, DumpConfig
             continue;
         }
 
-        auto typeName = field->typePtr->type;
-        if (config.compilable)
-            typeName = clearString(typeName);
-
-        std::string typeDisplayName = typeName + (field->typePtr->isPointer ? " *" : "");
+        std::string typeDisplayName = printType(field->typePtr, config.compilable);
         std::string fieldName = config.showAsPointers ? field->name : getName(field->name, cls);
 
         // [static] TYPE NAME;
@@ -182,17 +169,19 @@ void CodeClassDumper::dumpPointers(std::stringstream &out, Type *cls, DumpConfig
             out << "//";
         }
 
-        out << method->returnType->type + (method->returnType->isPointer ? " *" : "") << " (*" << cls->name << "::"
+        std::string returnTypeDisplayName = printType(method->returnType, config.compilable);
+
+        out << returnTypeDisplayName << " (*" << cls->name << "::"
             << methodName << ")(";
 
-        dumpMethodArgs(out, method, true);
-        out << ") = (" << method->returnType->type + (method->returnType->isPointer ? " *" : "") << " (*)(";
-        dumpMethodArgs(out, method, true);
+        dumpMethodArgs(out, method, true, config);
+        out << ") = (" << returnTypeDisplayName << " (*)(";
+        dumpMethodArgs(out, method, true, config);
         out << ")) 0x" << std::hex << method->address << ";\n";
     }
 }
 
-void CodeClassDumper::dumpMethodArgs(std::stringstream &out, Method *method, bool pointers = false) {
+void CodeClassDumper::dumpMethodArgs(std::stringstream &out, Method *method, bool pointers, DumpConfig config) {
     for (int i = 0; i < method->args.size(); i++) {
         Argument *arg = method->args[i];
 
@@ -205,13 +194,22 @@ void CodeClassDumper::dumpMethodArgs(std::stringstream &out, Method *method, boo
             }
         }
 
-        out << arg->typePtr->type + (arg->typePtr->isPointer ? " *" : "") << (!arg->name.empty() ? " " : "") << arg->name;
+        out << printType(arg->typePtr, config.compilable)
+            << (!arg->name.empty() ? " " : "") << arg->name;
 
         // Add comma between every argument
         if (i != method->args.size() - 1) {
             out << ", ";
         }
     }
+}
+
+std::string CodeClassDumper::printType(TypePtr * typePtr, bool compilable) {
+    std::string name = typePtr->type;
+    if (compilable)
+        name = clearString(name);
+
+    return name + (typePtr->isPointer ? " *" : "");
 }
 
 std::string CodeClassDumper::getName(std::string fullName, Type *cls) {

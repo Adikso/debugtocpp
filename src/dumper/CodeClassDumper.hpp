@@ -17,8 +17,9 @@ private:
     static std::string invalidCharacters;
 
     void dumpPointers(std::stringstream &out, Type * cls, DumpConfig config);
-    void dumpMethodArgs(std::stringstream &out, Method * method, bool pointers);
+    void dumpMethodArgs(std::stringstream &out, Method * method, bool pointers, DumpConfig config);
     std::string getName(std::string fullName, Type *cls);
+    std::string printType(TypePtr * type, bool compilable);
 };
 
 }
