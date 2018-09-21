@@ -4,14 +4,14 @@
 #include "utils/cxxopts.h"
 #include "common/DebugTypes.hpp"
 #include "extractor/pdb/PDBExtractor.hpp"
-#include "extractor/dwarf/DWARFExtractor.hpp"
+#include "extractor/dwarf/ELFExtractor.hpp"
 #include "dumper/ClassDumper.hpp"
 #include "common/Analyser.hpp"
 
 using namespace debugtocpp;
 using namespace debugtocpp::pdb;
 using namespace debugtocpp::types;
-using namespace debugtocpp::dwarf;
+using namespace debugtocpp::elf;
 
 DumpConfig argsToConfig(const cxxopts::ParseResult &args);
 std::vector<Type *> getTypes(Extractor * extractor, Analyser &analyser, std::list<std::string> names);

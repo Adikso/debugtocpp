@@ -1,14 +1,14 @@
 #include <fcntl.h>
 #include <iostream>
-#include "DWARFExtractor.hpp"
+#include "ELFExtractor.hpp"
 #include "../../utils/utils.hpp"
 
 using namespace retdec::demangler;
 
 namespace debugtocpp {
-namespace dwarf {
+namespace elf {
 
-ExtractResult debugtocpp::dwarf::DWARFExtractor::load(std::string filename, int image_base) {
+ExtractResult debugtocpp::elf::DWARFExtractor::load(std::string filename, int image_base) {
     int fd = open(filename.c_str(), O_RDONLY);
 
     if (fd < 0) {
@@ -16,8 +16,8 @@ ExtractResult debugtocpp::dwarf::DWARFExtractor::load(std::string filename, int 
     }
 
     try {
-        elf = new elf::elf(elf::create_mmap_loader(fd));
-    } catch (elf::format_error& e) {
+        elf = new ::elf::elf(::elf::create_mmap_loader(fd));
+    } catch (::elf::format_error& e) {
         if (strcmp(e.what(), "bad ELF magic number") == 0) {
             return ExtractResult::INVALID_FILE;
         } else {
@@ -28,7 +28,7 @@ ExtractResult debugtocpp::dwarf::DWARFExtractor::load(std::string filename, int 
 
     // Find symtab
     for (auto &section : elf->sections()) {
-        if (section.get_hdr().type != elf::sht::symtab)
+        if (section.get_hdr().type != ::elf::sht::symtab)
             continue;
 
         symtab = section.as_symtab();
@@ -52,12 +52,12 @@ Type *DWARFExtractor::getType(std::string name) {
         auto nname = cname->printname(cname->name);
 
         switch (data.type()) {
-            case elf::stt::func: {
+            case ::elf::stt::func: {
                 type->allMethods.push_back(getMethod(&sym));
                 type->fullyDefinedMethods.push_back(getMethod(&sym));
                 break;
             }
-            case elf::stt::object: {
+            case ::elf::stt::object: {
                 std::string fieldName = cname->printname(cname->name);
                 TypePtr * fieldType = new TypePtr("int", false);
 
@@ -104,7 +104,7 @@ Method *DWARFExtractor::getMethod(std::string name) {
         }
 
         switch (data.type()) {
-            case elf::stt::func: {
+            case ::elf::stt::func: {
                 if (cname->printname(cname->name) == name) {
                     return getMethod(&sym);
                 }
@@ -116,7 +116,7 @@ Method *DWARFExtractor::getMethod(std::string name) {
     return nullptr;
 }
 
-Method *DWARFExtractor::getMethod(elf::sym *sym) {
+Method *DWARFExtractor::getMethod(::elf::sym *sym) {
     auto &data = sym->get_data();
     auto cname = demangler->demangleToClass(sym->get_name());
 

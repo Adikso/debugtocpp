@@ -6,7 +6,7 @@
 #include <libelfin/elf/elf++.hh>
 
 namespace debugtocpp {
-namespace dwarf {
+namespace elf {
 
 class DWARFExtractor : public Extractor {
 public:
@@ -18,11 +18,11 @@ public:
     Method *getMethod(std::string name) override;
 
 private:
-    Method *getMethod(elf::sym * element);
+    Method *getMethod(::elf::sym * element);
     std::string getParameterTypeName(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype);
 
-    elf::elf * elf;
-    elf::symtab symtab;
+    ::elf::elf * elf;
+    ::elf::symtab symtab;
     std::unique_ptr<retdec::demangler::CDemangler> demangler;
 };
 

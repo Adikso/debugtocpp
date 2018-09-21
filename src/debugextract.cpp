@@ -10,7 +10,7 @@
 #include "dumper/CodeClassDumper.hpp"
 #include "dumper/JsonClassDumper.hpp"
 #include "extractor/pdb/PDBExtractor.hpp"
-#include "extractor/dwarf/DWARFExtractor.hpp"
+#include "extractor/dwarf/ELFExtractor.hpp"
 #include "utils/cxxopts.h"
 #include "utils/utils.hpp"
 
