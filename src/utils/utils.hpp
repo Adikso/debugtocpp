@@ -40,17 +40,34 @@ inline int isDirectory(const std::string &path) {
 // This is hack TODO
 inline std::string demangleTypedef(const std::string &mangled) {
     std::string prefix = "_ZTI";
-    if (strncmp(mangled.c_str(), prefix.c_str(), prefix.size()) == 0) {
+    if (mangled.rfind(prefix, 0) == 0) {
         std::string rest = mangled.substr(prefix.size()); // Get everything without prefix
 
-        // Extract length of name
-        std::stringstream ss;
-        ss << rest;
-        int length;
-        ss >> length;
+        bool nspace = rest[0] == 'N';
+        if (nspace) {
+            rest = rest.substr(1);
+        }
 
-        // Return name
-        return mangled.substr(prefix.size() + std::to_string(length).length(), length);
+        std::stringstream out;
+
+        while (true) {
+            std::stringstream ss;
+            ss << rest;
+            int length;
+            ss >> length;
+
+            if (length == 0)
+                break;
+
+            out << rest.substr(std::to_string(length).length(), length);
+            rest = rest.substr(std::to_string(length).length() + length);
+
+            if (std::isdigit(rest[0]) && nspace) {
+                out << "::";
+            }
+        }
+
+        return out.str();
     }
 
     return std::string();

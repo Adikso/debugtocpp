@@ -45,9 +45,11 @@ Type *DWARFExtractor::getType(std::string name) {
         auto cname = demangler->demangleToClass(sym.get_name());
 
         // Ignore symbols with different name than specified
-        if (cname->name.empty() || cname->name[0].un != name) {
+        if (cname->name.empty() || cname->printname(cname->name).rfind(name, 0) != 0) {
             continue;
         }
+
+        auto nname = cname->printname(cname->name);
 
         switch (data.type()) {
             case elf::stt::func: {
