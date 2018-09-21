@@ -5,6 +5,7 @@
 
 #include "debugextract.hpp"
 
+#include "common/Analyser.hpp"
 #include "common/DebugTypes.hpp"
 #include "dumper/CodeClassDumper.hpp"
 #include "dumper/JsonClassDumper.hpp"
@@ -91,9 +92,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    Analyser analyser{config};
+
     if (args.count("list")) {
         for (auto &type : extractor->getTypesList(false)) {
-            if (!(config.noCompilerGenerated && isCompilerGenerated(type))) {
+            if (analyser.isCompilerGeneratedType(type)) {
                 std::cout << type << std::endl;
             }
         }
@@ -107,7 +110,7 @@ int main(int argc, char *argv[]) {
         names = split(v[1], ',');
     }
 
-    std::vector<Type *> types = getTypes(extractor, config, names);
+    std::vector<Type *> types = getTypes(extractor, analyser, names);
     std::vector<std::string> dumpOut = dump(types, config);
 
     if (config.toDirectory) {
@@ -158,24 +161,14 @@ DumpConfig argsToConfig(const cxxopts::ParseResult &args) {
     return config;
 }
 
-bool isCompilerGenerated(std::string name) {
-    return name.rfind("std::", 0) == 0 || name[0] == '_';
-}
-
-bool isCompilerGenerated(Type * type) {
-    return isCompilerGenerated(type->name);
-}
-
-std::vector<Type *> getTypes(Extractor * extractor, DumpConfig config, std::list<std::string> names) {
+std::vector<Type *> getTypes(Extractor * extractor, Analyser &analyser, std::list<std::string> names) {
     std::vector<Type *> types;
 
     for (const auto &name : names) {
         Type * type = extractor->getType(name);
         if (type != nullptr) {
-            if (config.noCompilerGenerated && isCompilerGenerated(type)) {
-                continue;
-            }
-            types.push_back(type);
+            if (analyser.process(type))
+                types.push_back(type);
         }
     }
 
