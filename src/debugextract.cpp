@@ -1,26 +1,17 @@
 #include <utility>
-
 #include <iostream>
-#include "utils/cxxopts.h"
-#include "common/DebugTypes.hpp"
 #include <fstream>
 #include <iostream>
-#include "extractor/pdb/PDBExtractor.hpp"
-#include "extractor/dwarf/DWARFExtractor.hpp"
+
+#include "debugextract.hpp"
+
+#include "common/DebugTypes.hpp"
 #include "dumper/CodeClassDumper.hpp"
 #include "dumper/JsonClassDumper.hpp"
+#include "extractor/pdb/PDBExtractor.hpp"
+#include "extractor/dwarf/DWARFExtractor.hpp"
+#include "utils/cxxopts.h"
 #include "utils/utils.hpp"
-
-using namespace debugtocpp;
-using namespace debugtocpp::pdb;
-using namespace debugtocpp::types;
-using namespace debugtocpp::dwarf;
-
-DumpConfig argsToConfig(const cxxopts::ParseResult &args);
-bool isCompilerGenerated(Type * type);
-bool isCompilerGenerated(std::string name);
-std::vector<Type *> getTypes(Extractor * extractor, DumpConfig config, std::list<std::string> names);
-std::vector<std::string> dump(std::vector<Type *> types, DumpConfig config);
 
 int main(int argc, char *argv[]) {
     cxxopts::Options options("debugtocpp", "Generate C++ classes from pdb/dwarf");

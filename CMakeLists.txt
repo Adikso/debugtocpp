@@ -25,7 +25,7 @@ set(DEBUGTOCPP_SOURCES
         libelfin/elf/elf.cc
         libelfin/elf/mmap_loader.cc
 
-        src/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp src/extractor/pdb/PDBExtractor.hpp src/extractor/Extractor.hpp src/common/DebugTypes.hpp src/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp src/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp src/dumper/JsonClassDumper.hpp src/utils/json.hpp src/utils/utils.hpp src/extractor/dwarf/DWARFExtractor.cpp src/extractor/dwarf/DWARFExtractor.hpp)
+        src/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp src/extractor/pdb/PDBExtractor.hpp src/extractor/Extractor.hpp src/common/DebugTypes.hpp src/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp src/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp src/dumper/JsonClassDumper.hpp src/utils/json.hpp src/utils/utils.hpp src/extractor/dwarf/DWARFExtractor.cpp src/extractor/dwarf/DWARFExtractor.hpp src/debugextract.hpp)
 
 add_executable(debugtocpp ${DEBUGTOCPP_SOURCES})
 target_include_directories(debugtocpp PUBLIC retdec/include)
