@@ -139,6 +139,7 @@ TypePtr * DWARFExtractor::getTypePtr(const ::dwarf::die &die) {
             if (attr.first == ::dwarf::DW_AT::type) {
                 TypePtr * type = getTypePtr(attr.second.as_reference());
 
+                type->isPointer = die.tag == ::dwarf::DW_TAG::pointer_type;
                 type->isConstant = die.tag == ::dwarf::DW_TAG::const_type;
                 type->isReference = die.tag == ::dwarf::DW_TAG::reference_type;
                 type->isArray = die.tag == ::dwarf::DW_TAG::array_type;
