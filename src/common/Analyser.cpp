@@ -33,5 +33,5 @@ bool Analyser::isCompilerGenerated(Method *method) {
             "__man_vec_dtor", "__ehvec_copy_ctor", "__ehvec_copy_ctor_vb"
     };
 
-    return method->name.rfind("std::", 0) == 0 || std::count(msvc.begin(), msvc.end(), method->name);
+    return method->isCompilerGenerated || method->name.rfind("std::", 0) == 0 || std::count(msvc.begin(), msvc.end(), method->name);
 }

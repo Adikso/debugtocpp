@@ -108,6 +108,14 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
                 if (attr.first == ::dwarf::DW_AT::accessibility) {
                     method->accessibility = static_cast<Accessibility>(attr.second.as_uconstant());
                 }
+
+                if (attr.first == ::dwarf::DW_AT::artificial) {
+                    method->isCompilerGenerated = attr.second.as_flag();
+                }
+            }
+
+            if (method->name == type->name) {
+                method->returnType->type = "";
             }
 
             methods.push_back(method);

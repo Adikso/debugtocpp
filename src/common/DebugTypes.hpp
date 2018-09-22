@@ -92,6 +92,7 @@ public:
     bool isStatic = false;
     bool isVariadic = false;
     bool isVirtual = false;
+    bool isCompilerGenerated = false;
 };
 
 class Type {
