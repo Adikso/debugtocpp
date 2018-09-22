@@ -64,6 +64,7 @@ Type *ELFExtractor::getType(std::string name) {
                 auto * field = new Field(fieldName, fieldType, 0);
                 field->isStatic = true;
                 field->address = data.value;
+                field->accessibility = Accessibility::PUBLIC;
 
                 type->fields.push_back(field);
                 break;
@@ -127,6 +128,7 @@ Method *ELFExtractor::getMethod(::elf::sym *sym) {
     method->callType = cname->function_call; // inne wartości
     method->isStatic = cname->is_static;
     method->isVirtual = cname->is_virtual;
+    method->accessibility = Accessibility::PUBLIC;
 
     if (method->isStatic)
         method->args.push_back(new Argument("self", new TypePtr(method->name, true)));

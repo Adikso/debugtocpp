@@ -79,6 +79,10 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
                 if (attr.first == ::dwarf::DW_AT::external) {
                     field->isStatic = attr.second.as_flag();
                 }
+
+                if (attr.first == ::dwarf::DW_AT::accessibility) {
+                    field->accessibility = static_cast<Accessibility>(attr.second.as_uconstant());
+                }
             }
             type->fields.push_back(field);
         }
@@ -99,6 +103,10 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
 
                 if (attr.first == ::dwarf::DW_AT::linkage_name) {
                     method->mangledName = attr.second.as_string();
+                }
+
+                if (attr.first == ::dwarf::DW_AT::accessibility) {
+                    method->accessibility = static_cast<Accessibility>(attr.second.as_uconstant());
                 }
             }
 

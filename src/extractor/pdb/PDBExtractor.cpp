@@ -58,6 +58,7 @@ Type *PDBExtractor::getType(std::string name) {
 
             // Load fields
             Field * field = new Field(pdbField.Member.name, getReturnTypeStr(pdbField.Member.type_def), pdbField.Member.offset);
+            field->accessibility = Accessibility::PUBLIC;
 
             if (pdbField.field_type == PDBFIELD_STMEMBER) {
                 field->isStatic = true;
@@ -156,6 +157,7 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
     method->isStatic = pdbTypeFunction->func_thistype_index == 0;
     method->isVariadic = pdbTypeFunction->func_is_variadic;
     method->isVirtual = fieldMember->offset == -1;
+    method->accessibility = Accessibility::PUBLIC;
 
     for (int i = 0; i < pdbTypeFunction->func_args_count; i++) {
         Argument * arg = new Argument("", getReturnTypeStr(pdbTypeFunction->func_args[i].type_def));

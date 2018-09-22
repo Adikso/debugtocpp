@@ -69,11 +69,18 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
         out << " : public " << baseClassDisplayName.c_str();
     }
 
-    out << " {\npublic:\n";
+    out << " {\n";
+
+    Accessibility currentAccesibility = Accessibility::NONE;
 
     for (const auto &field : cls->fields) {
         if (config.showAsPointers && field->address == 0) {
             continue;
+        }
+
+        if (field->accessibility != currentAccesibility) {
+            out << accesibilityNames[field->accessibility] << ":\n";
+            currentAccesibility = field->accessibility;
         }
 
         // [static] TYPE NAME;
@@ -91,6 +98,11 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
         out << "\n";
 
     for (auto method : (config.showAsPointers ? cls->fullyDefinedMethods : cls->allMethods)) {
+        if (method->accessibility != currentAccesibility) {
+            out << accesibilityNames[method->accessibility] << ":\n";
+            currentAccesibility = method->accessibility;
+        }
+
         std::string methodName = getName(method->name, cls);
         if (config.compilable) {
             methodName = clearString(methodName);

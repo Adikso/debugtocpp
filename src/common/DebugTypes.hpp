@@ -38,6 +38,12 @@ static std::map<int, std::string> callingConventionNames = {
         {CV_CALL_M32RCALL,    "__m32rcall"}
 };
 
+enum Accessibility {
+    NONE, PUBLIC, PRIVATE, PROTECTED
+};
+
+static std::string accesibilityNames[] = {"none", "public", "private", "protected"};
+
 class TypePtr {
 public:
     std::string type;
@@ -63,6 +69,7 @@ struct Field {
     int offset = 0;
     unsigned long address = 0;
 
+    Accessibility accessibility = Accessibility::PRIVATE;
     bool isStatic = false;
 
     Field(const std::string &name, TypePtr *type, int offset) : name(name), typePtr(type), offset(offset) {}
@@ -78,7 +85,7 @@ public:
     unsigned long address = 0;
     int callType = 0;
     std::vector<Argument *> args;
-
+    Accessibility accessibility = Accessibility::PRIVATE;
     bool isStatic = false;
     bool isVariadic = false;
     bool isVirtual = false;
