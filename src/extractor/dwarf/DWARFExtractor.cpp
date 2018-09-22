@@ -85,6 +85,7 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
 
         if (child.tag == ::dwarf::DW_TAG::subprogram) {
             auto * method = new Method();
+            method->returnType = new TypePtr("void", false);
 
             for (auto &attr : child.attributes()) {
                 if (attr.first == ::dwarf::DW_AT::name) {
@@ -92,6 +93,7 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
                 }
 
                 if (attr.first == ::dwarf::DW_AT::type) {
+                    delete(method->returnType);
                     method->returnType = getTypePtr(attr.second.as_reference());
                 }
 
