@@ -207,7 +207,8 @@ void CodeClassDumper::dumpMethodArgs(std::stringstream &out, Method *method, boo
         }
 
         out << printType(arg->typePtr, config.compilable)
-            << (!arg->name.empty() ? " " : "") << arg->name;
+            << (!arg->name.empty() ? " " : "")
+            << arg->name;
 
         // Add comma between every argument
         if (i != method->args.size() - 1) {
@@ -221,7 +222,7 @@ std::string CodeClassDumper::printType(TypePtr * typePtr, bool compilable) {
     if (compilable)
         name = clearString(name);
 
-    return name + (typePtr->isPointer ? " *" : "");
+    return (typePtr->isConstant ? std::string("const ") : "") + name + (typePtr->isReference ? "&" : "") + (typePtr->isPointer ? " *" : "");
 }
 
 std::string CodeClassDumper::getName(std::string fullName, Type *cls) {

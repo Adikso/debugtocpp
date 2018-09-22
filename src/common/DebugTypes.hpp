@@ -48,6 +48,8 @@ class TypePtr {
 public:
     std::string type;
     bool isPointer = false;
+    bool isConstant = false;
+    bool isReference = false;
 
     TypePtr(const std::string &type, bool isPointer) : type(type), isPointer(isPointer) {}
 

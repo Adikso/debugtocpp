@@ -124,10 +124,15 @@ Type *DWARFExtractor::getType(const ::dwarf::die &node, std::string &name) {
 TypePtr * DWARFExtractor::getTypePtr(const ::dwarf::die &die) {
     TypePtr * typePtr = new TypePtr("unknown", true);
 
-    if (die.tag == ::dwarf::DW_TAG::pointer_type || die.tag == ::dwarf::DW_TAG::const_type) {
+    if (die.tag == ::dwarf::DW_TAG::pointer_type || die.tag == ::dwarf::DW_TAG::const_type || die.tag == ::dwarf::DW_TAG::reference_type) {
         for (auto &attr : die.attributes()) {
             if (attr.first == ::dwarf::DW_AT::type) {
-                return getTypePtr(attr.second.as_reference());
+                TypePtr * type = getTypePtr(attr.second.as_reference());
+
+                type->isConstant = die.tag == ::dwarf::DW_TAG::const_type;
+                type->isReference = die.tag == ::dwarf::DW_TAG::reference_type;
+
+                return type;
             }
         }
     }
