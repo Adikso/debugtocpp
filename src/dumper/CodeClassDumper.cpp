@@ -89,7 +89,9 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             << printType(field->typePtr, config.compilable)
             << " "
             << (config.showAsPointers && field->isStatic ? "* " : "")
-            << getName(field->name, cls) << ";\n";
+            << getName(field->name, cls)
+            << (field->typePtr->isArray ? "[]" : "")
+            << ";\n";
     }
 
 
