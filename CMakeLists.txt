@@ -25,7 +25,22 @@ set(DEBUGTOCPP_SOURCES
         libelfin/elf/elf.cc
         libelfin/elf/mmap_loader.cc
 
-        src/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp src/extractor/pdb/PDBExtractor.hpp src/extractor/Extractor.hpp src/common/DebugTypes.hpp src/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp src/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp src/dumper/JsonClassDumper.hpp src/utils/json.hpp src/utils/utils.hpp src/extractor/elf/ELFExtractor.cpp src/extractor/elf/ELFExtractor.hpp src/debugextract.hpp src/common/Analyser.cpp src/common/Analyser.hpp)
+        libelfin/dwarf/abbrev.cc
+        libelfin/dwarf/attrs.cc
+        libelfin/dwarf/cursor.cc
+        libelfin/dwarf/data.hh
+        libelfin/dwarf/die.cc
+        libelfin/dwarf/die_str_map.cc
+        libelfin/dwarf/dwarf.cc
+        libelfin/dwarf/elf.cc
+        libelfin/dwarf/expr.cc
+        libelfin/dwarf/line.cc
+        libelfin/dwarf/rangelist.cc
+        libelfin/dwarf/value.cc
+
+        src/extractor/dwarf/to_string.cc
+
+        src/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp src/extractor/pdb/PDBExtractor.hpp src/extractor/dwarf/DWARFExtractor.cpp src/extractor/dwarf/DWARFExtractor.hpp src/extractor/Extractor.hpp src/common/DebugTypes.hpp src/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp src/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp src/dumper/JsonClassDumper.hpp src/utils/json.hpp src/utils/utils.hpp src/extractor/elf/ELFExtractor.cpp src/extractor/elf/ELFExtractor.hpp src/debugextract.hpp src/common/Analyser.cpp src/common/Analyser.hpp)
 
 add_executable(debugtocpp ${DEBUGTOCPP_SOURCES})
 target_include_directories(debugtocpp PUBLIC retdec/include)
@@ -33,3 +48,4 @@ target_include_directories(debugtocpp PUBLIC retdec/src/pdbparser)
 target_include_directories(debugtocpp PUBLIC retdec/src/demangler)
 target_include_directories(debugtocpp PUBLIC retdec/src/utils)
 target_include_directories(debugtocpp PUBLIC libelfin/elf)
+target_include_directories(debugtocpp PUBLIC libelfin/dwarf)

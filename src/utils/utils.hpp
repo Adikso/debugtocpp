@@ -62,6 +62,9 @@ inline std::string demangleTypedef(const std::string &mangled) {
             if (length == 0 || rest.empty())
                 break;
 
+            if (length + std::to_string(length).length() > rest.length())
+                break;
+
             std::string part = rest.substr(std::to_string(length).length(), length);
             parts.push_back(part);
 

@@ -10,7 +10,8 @@
 #include "dumper/CodeClassDumper.hpp"
 #include "dumper/JsonClassDumper.hpp"
 #include "extractor/pdb/PDBExtractor.hpp"
-#include "extractor/dwarf/ELFExtractor.hpp"
+#include "extractor/elf/ELFExtractor.hpp"
+#include "extractor/dwarf/DWARFExtractor.hpp"
 #include "utils/cxxopts.h"
 #include "utils/utils.hpp"
 
@@ -50,16 +51,20 @@ int main(int argc, char *argv[]) {
     }
 
     PDBExtractor pdbExtractor;
+    ELFExtractor elfExtractor;
     DWARFExtractor dwarfExtractor;
 
     ExtractResult pdbExtractResult = pdbExtractor.load(v[0], args["base"].as<int>());
-    ExtractResult elfExtractResult = dwarfExtractor.load(v[0], args["base"].as<int>());
+    ExtractResult elfExtractResult = elfExtractor.load(v[0], args["base"].as<int>());
+    ExtractResult dwarfExtractResult = dwarfExtractor.load(v[0], args["base"].as<int>());
 
     Extractor * extractor;
     if (pdbExtractResult == ExtractResult::OK) {
         extractor = &pdbExtractor;
-    } else if (elfExtractResult == ExtractResult::OK) {
+    } else if (dwarfExtractResult == ExtractResult::OK) {
         extractor = &dwarfExtractor;
+    } else if (elfExtractResult == ExtractResult::OK) {
+        extractor = &elfExtractor;
     } else {
         std::cout << "Failed to load file: ";
 

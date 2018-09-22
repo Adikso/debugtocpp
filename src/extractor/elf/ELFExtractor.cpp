@@ -8,7 +8,7 @@ using namespace retdec::demangler;
 namespace debugtocpp {
 namespace elf {
 
-ExtractResult debugtocpp::elf::DWARFExtractor::load(std::string filename, int image_base) {
+ExtractResult debugtocpp::elf::ELFExtractor::load(std::string filename, int image_base) {
     int fd = open(filename.c_str(), O_RDONLY);
 
     if (fd < 0) {
@@ -37,7 +37,7 @@ ExtractResult debugtocpp::elf::DWARFExtractor::load(std::string filename, int im
     return ExtractResult::OK;
 }
 
-Type *DWARFExtractor::getType(std::string name) {
+Type *ELFExtractor::getType(std::string name) {
     Type * type = new Type(name);
 
     for (auto sym : symtab) {
@@ -74,7 +74,7 @@ Type *DWARFExtractor::getType(std::string name) {
     return type;
 }
 
-std::list<std::string> DWARFExtractor::getTypesList(bool showStructs) {
+std::list<std::string> ELFExtractor::getTypesList(bool showStructs) {
     std::list<std::string> names;
 
     for (auto sym : symtab) {
@@ -94,7 +94,7 @@ std::list<std::string> DWARFExtractor::getTypesList(bool showStructs) {
     return names;
 }
 
-Method *DWARFExtractor::getMethod(std::string name) {
+Method *ELFExtractor::getMethod(std::string name) {
     for (auto sym : symtab) {
         auto &data = sym.get_data();
         auto cname = demangler->demangleToClass(sym.get_name());
@@ -116,7 +116,7 @@ Method *DWARFExtractor::getMethod(std::string name) {
     return nullptr;
 }
 
-Method *DWARFExtractor::getMethod(::elf::sym *sym) {
+Method *ELFExtractor::getMethod(::elf::sym *sym) {
     auto &data = sym->get_data();
     auto cname = demangler->demangleToClass(sym->get_name());
 
@@ -148,7 +148,7 @@ Method *DWARFExtractor::getMethod(::elf::sym *sym) {
     return method;
 }
 
-std::string DWARFExtractor::getParameterTypeName(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype) {
+std::string ELFExtractor::getParameterTypeName(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype) {
     std::string retvalue;
 
     switch (ttype.type) {

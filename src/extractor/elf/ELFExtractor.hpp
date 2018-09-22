@@ -1,5 +1,5 @@
-#ifndef DEBUGTOCPP_DWARFEXTRACTOR_HPP
-#define DEBUGTOCPP_DWARFEXTRACTOR_HPP
+#ifndef DEBUGTOCPP_ELFEXTRACTOR_HPP
+#define DEBUGTOCPP_ELFEXTRACTOR_HPP
 
 #include "../Extractor.hpp"
 #include "retdec/demangler/demangler.h"
@@ -8,7 +8,7 @@
 namespace debugtocpp {
 namespace elf {
 
-class DWARFExtractor : public Extractor {
+class ELFExtractor : public Extractor {
 public:
     ExtractResult load(std::string filename, int image_base) override;
 
@@ -29,4 +29,4 @@ private:
 }
 }
 
-#endif //DEBUGTOCPP_DWARFEXTRACTOR_HPP
+#endif //DEBUGTOCPP_ELFEXTRACTOR_HPP

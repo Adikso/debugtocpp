@@ -44,6 +44,8 @@ public:
     bool isPointer = false;
 
     TypePtr(const std::string &type, bool isPointer) : type(type), isPointer(isPointer) {}
+
+    TypePtr() {}
 };
 
 struct Argument {
@@ -51,6 +53,8 @@ struct Argument {
     TypePtr * typePtr;
 
     Argument(const std::string &name, TypePtr *type) : name(name), typePtr(type) {}
+
+    Argument() {}
 };
 
 struct Field {
@@ -62,11 +66,14 @@ struct Field {
     bool isStatic = false;
 
     Field(const std::string &name, TypePtr *type, int offset) : name(name), typePtr(type), offset(offset) {}
+
+    Field() {}
 };
 
 class Method {
 public:
     std::string name;
+    std::string mangledName;
     TypePtr * returnType;
     unsigned long address = 0;
     int callType = 0;
@@ -87,6 +94,8 @@ public:
     std::list<std::string> dependentTypes;
 
     Type(std::string name) : name(std::move(name)) {}
+
+    Type() {}
 };
 
 }
