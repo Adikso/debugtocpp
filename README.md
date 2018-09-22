@@ -14,6 +14,41 @@ cmake .. && make
 ```
 
 ## Examples
+### DWARF
+Original source:
+```cpp
+class Test : public Atest{
+public:
+    bool funnyBool;
+    static int funnyStatic;
+    int array[4] = {2, 1, 3, 7};
+    int * ptrArray = new int[4]{2, 1, 3, 7};
+
+    int * funnyFunc(int someArg);
+    const int funnyFunc(int &someArg);
+
+private:
+    bool karamba;
+};
+```
+
+Extracted:
+```cpp
+class Test : public Atest {
+public:
+  bool funnyBool;
+  static int funnyStatic;
+  int array[];
+  int * ptrArray;
+private:
+  bool karamba;
+
+public:
+  int * funnyFunc(int someArg);
+  const int funnyFunc(int& someArg);
+};
+```
+
 ### PDB
 Original source:
 ```cpp
@@ -74,7 +109,7 @@ public:
 
 ```
 
-### DWARF/ELF
+### ELF
 Original source:
 ```cpp
 class BigCoin : public Enemy {
