@@ -21,8 +21,8 @@ class Test : public Atest{
 public:
     bool funnyBool;
     static int funnyStatic;
-    int array[4] = {2, 1, 3, 7};
-    int * ptrArray = new int[4]{2, 1, 3, 7};
+    int array[4] = {1,2,3,4};
+    int * ptrArray = new int[4]{1,2,3,4};
 
     int * funnyFunc(int someArg);
     const int funnyFunc(int &someArg);
@@ -38,7 +38,7 @@ class Test : public Atest {
 public:
   bool funnyBool;
   static int funnyStatic;
-  int array[];
+  int array[4];
   int * ptrArray;
 private:
   bool karamba;
