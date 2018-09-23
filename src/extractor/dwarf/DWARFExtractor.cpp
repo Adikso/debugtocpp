@@ -144,6 +144,18 @@ TypePtr * DWARFExtractor::getTypePtr(const ::dwarf::die &die) {
                 type->isReference = die.tag == ::dwarf::DW_TAG::reference_type;
                 type->isArray = die.tag == ::dwarf::DW_TAG::array_type;
 
+                if (type->isArray) {
+                    for (const ::dwarf::die &arrayChild : die) {
+                        if (arrayChild.tag == ::dwarf::DW_TAG::subrange_type) {
+                            for (auto &arrayAttr : arrayChild.attributes()) {
+                                if (arrayAttr.first == ::dwarf::DW_AT::upper_bound) {
+                                    type->arraySize = arrayAttr.second.as_sconstant() + 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 return type;
             }
         }

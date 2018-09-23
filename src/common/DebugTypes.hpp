@@ -50,7 +50,9 @@ public:
     bool isPointer = false;
     bool isConstant = false;
     bool isReference = false;
+
     bool isArray = false;
+    int arraySize = 0;
 
     TypePtr(const std::string &type, bool isPointer) : type(type), isPointer(isPointer) {}
 

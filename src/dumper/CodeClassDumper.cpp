@@ -90,7 +90,7 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
             << " "
             << (config.showAsPointers && field->isStatic ? "* " : "")
             << getName(field->name, cls)
-            << (field->typePtr->isArray ? "[]" : "")
+            << (field->typePtr->isArray ? "[" + std::to_string(field->typePtr->arraySize) + "]" : "")
             << ";\n";
     }
 
