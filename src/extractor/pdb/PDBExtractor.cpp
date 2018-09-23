@@ -226,6 +226,16 @@ std::list<std::string> PDBExtractor::getTypesList(bool showStructs) {
     return names;
 }
 
+std::vector<Type *> PDBExtractor::getTypes(std::list<std::string> typesList) {
+    std::vector<Type *> types;
+    // No optimization here yet
+    for (std::string &name : typesList) {
+        types.push_back(getType(name));
+    }
+
+    return types;
+}
+
 // PDBUniversalType methods
 
 std::string PDBUniversalType::getName() {

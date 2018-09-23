@@ -18,6 +18,7 @@ public:
     virtual ExtractResult load(std::string filename, int image_base) = 0;
 
     virtual Type *getType(std::string name) = 0;
+    virtual std::vector<Type *> getTypes(std::list<std::string> typesList) = 0;
 
     virtual std::list<std::string> getTypesList(bool showStructs) = 0;
 

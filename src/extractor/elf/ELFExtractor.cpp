@@ -38,25 +38,48 @@ ExtractResult debugtocpp::elf::ELFExtractor::load(std::string filename, int imag
 }
 
 Type *ELFExtractor::getType(std::string name) {
-    allDependentClasses.clear();
+    std::list<std::string> typesList;
+    typesList.push_back(name);
 
-    Type * type = new Type(name);
+    std::vector<Type *> result = getTypes(typesList);
+    return !result.empty() ? result[0] : nullptr;
+}
+
+std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
+    std::map<std::string, Type *> types;
 
     for (auto sym : symtab) {
         auto &data = sym.get_data();
         auto cname = demangler->demangleToClass(sym.get_name());
 
         // Ignore symbols with different name than specified
-        if (cname->name.empty() || cname->printname(cname->name).rfind(name, 0) != 0) {
+        if (cname->name.empty()) {
             continue;
         }
 
-        auto nname = cname->printname(cname->name);
+        std::string name; // garbage solution
+        for (std::string &typeName : typesList) {
+            if (cname->printname(cname->name).rfind(typeName, 0) == 0) {
+                name = typeName;
+                break;
+            }
+        }
+
+        if (name.empty()) continue;
+
+        Type * type = types.count(name) ? types[name] : types[name] = new Type(name);
 
         switch (data.type()) {
             case ::elf::stt::func: {
-                type->allMethods.push_back(getMethod(&sym));
-                type->fullyDefinedMethods.push_back(getMethod(&sym));
+                Method * method = getMethod(&sym);
+                for (auto &arg : method->args) {
+                    if (arg->typePtr->isPointer) {
+                        type->dependentTypes.push_back(arg->typePtr->type);
+                    }
+                }
+
+                type->allMethods.push_back(method);
+                type->fullyDefinedMethods.push_back(method);
                 break;
             }
             case ::elf::stt::object: {
@@ -72,13 +95,18 @@ Type *ELFExtractor::getType(std::string name) {
                 break;
             }
         }
+
     }
 
-    allDependentClasses.sort();
-    allDependentClasses.unique();
-    type->dependentTypes = allDependentClasses;
+    std::vector<Type *> typesVector;
+    typesVector.reserve(types.size());
+    for (auto elem : types) {
+        elem.second->dependentTypes.sort();
+        elem.second->dependentTypes.unique();
+        typesVector.push_back(elem.second);
+    }
 
-    return type;
+    return typesVector;
 }
 
 std::list<std::string> ELFExtractor::getTypesList(bool showStructs) {

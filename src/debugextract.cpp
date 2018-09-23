@@ -1,4 +1,6 @@
 #include <utility>
+
+#include <utility>
 #include <iostream>
 #include <fstream>
 #include <iostream>
@@ -167,17 +169,7 @@ DumpConfig argsToConfig(const cxxopts::ParseResult &args) {
 }
 
 std::vector<Type *> getTypes(Extractor * extractor, Analyser &analyser, std::list<std::string> names) {
-    std::vector<Type *> types;
-
-    for (const auto &name : names) {
-        Type * type = extractor->getType(name);
-        if (type != nullptr) {
-            if (analyser.process(type))
-                types.push_back(type);
-        }
-    }
-
-    return types;
+    return extractor->getTypes(std::move(names));
 }
 
 std::vector<std::string> dump(std::vector<Type *> types, DumpConfig config) {
