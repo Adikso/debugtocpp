@@ -38,6 +38,8 @@ ExtractResult debugtocpp::elf::ELFExtractor::load(std::string filename, int imag
 }
 
 Type *ELFExtractor::getType(std::string name) {
+    allDependentClasses.clear();
+
     Type * type = new Type(name);
 
     for (auto sym : symtab) {
@@ -71,6 +73,10 @@ Type *ELFExtractor::getType(std::string name) {
             }
         }
     }
+
+    allDependentClasses.sort();
+    allDependentClasses.unique();
+    type->dependentTypes = allDependentClasses;
 
     return type;
 }
@@ -262,6 +268,7 @@ std::string ELFExtractor::getParameterTypeName(retdec::demangler::cName &cname, 
         case cName::ttype::TT_NAME:
             //print the name
             retvalue += cname.printname(ttype.n);
+            allDependentClasses.push_back(cname.printname(ttype.n));
             break;
         default:
             break;
