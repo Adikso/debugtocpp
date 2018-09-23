@@ -120,7 +120,7 @@ Method *PDBExtractor::getMethod(PDBFunction *func) {
 
     method->name = func->name;
     if (method->name[0] == '~') { // Fixes destructor returning void
-        method->returnType = new TypePtr("", true);
+        method->returnType = new TypePtr("", false);
     } else {
         method->returnType = getReturnTypeStr(func->type_def->func_rettype_def);
     }
@@ -148,7 +148,7 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
 
     method->name = fieldMember->name;
     if (method->name[0] == '~') { // Fixes destructor returning void
-        method->returnType = new TypePtr("", true);
+        method->returnType = new TypePtr("", false);
     } else {
         method->returnType = getReturnTypeStr(pdbTypeFunction->func_rettype_def);
     }
