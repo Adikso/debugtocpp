@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 
     if (args.count("list")) {
         for (auto &type : extractor->getTypesList(false)) {
-            if (analyser.isCompilerGeneratedType(type)) {
+            if (!analyser.isCompilerGeneratedType(type)) {
                 std::cout << type << std::endl;
             }
         }
