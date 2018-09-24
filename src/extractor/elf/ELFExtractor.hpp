@@ -20,7 +20,7 @@ public:
 
 private:
     Method *getMethod(::elf::sym * element);
-    std::string getParameterTypeName(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype);
+    TypePtr * getTypePtr(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype);
 
     ::elf::elf * elf;
     ::elf::symtab symtab;

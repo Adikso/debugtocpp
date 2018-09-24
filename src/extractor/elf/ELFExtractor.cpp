@@ -169,13 +169,13 @@ Method *ELFExtractor::getMethod(::elf::sym *sym) {
 
     int argNum = 1;
     for (auto &param : cname->parameters) {
-        std::string typeName = getParameterTypeName(*cname, param);
-        if (typeName == "void") {
+        auto typePtr = getTypePtr(*cname, param);
+        if (typePtr->type == "void") {
+            delete(typePtr);
             continue;
         }
 
         std::string argName = "arg" + std::to_string(argNum++);
-        auto typePtr = new TypePtr(typeName, param.type == cName::ttype::TT_NAME);
 
         auto * arg = new Argument(argName, typePtr);
         method->args.push_back(arg);
@@ -184,7 +184,7 @@ Method *ELFExtractor::getMethod(::elf::sym *sym) {
     return method;
 }
 
-std::string ELFExtractor::getParameterTypeName(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype) {
+TypePtr * ELFExtractor::getTypePtr(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype) {
     std::string retvalue;
 
     switch (ttype.type) {
@@ -302,7 +302,10 @@ std::string ELFExtractor::getParameterTypeName(retdec::demangler::cName &cname, 
             break;
     }
 
-    return retvalue;
+    TypePtr * typePtr = new TypePtr(retvalue, ttype.type == cName::ttype::TT_NAME);
+    typePtr->isBaseType = ttype.type == cName::ttype::TT_BUILTIN;
+
+    return typePtr;
 }
 
 }

@@ -169,7 +169,9 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
 
 TypePtr * PDBExtractor::getReturnTypeStr(PDBTypeDef *type) {
     if (dynamic_cast<PDBTypeBase *>(type)) {
-        return new TypePtr(((PDBTypeBase *) type)->description, false);
+        TypePtr * typePtr = new TypePtr(((PDBTypeBase *) type)->description, false);
+        typePtr->isBaseType = true;
+        return typePtr;
     } else if (dynamic_cast<PDBTypePointer *>(type)) {
         return getReturnTypeStr(((PDBTypePointer *) type)->ptr_utype_def); // Follows pointer to the type
     }

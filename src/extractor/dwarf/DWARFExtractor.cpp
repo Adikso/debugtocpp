@@ -163,6 +163,7 @@ TypePtr * DWARFExtractor::getTypePtr(const ::dwarf::die &die) {
 
     if (die.tag == ::dwarf::DW_TAG::base_type || die.tag == ::dwarf::DW_TAG::class_type) {
         typePtr->isPointer = die.tag == ::dwarf::DW_TAG::class_type;
+        typePtr->isBaseType = die.tag == ::dwarf::DW_TAG::base_type;
         for (auto &attr : die.attributes()) {
             if (attr.first == ::dwarf::DW_AT::name) {
                 typePtr->type = attr.second.as_string();

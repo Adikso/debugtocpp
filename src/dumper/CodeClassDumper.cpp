@@ -221,7 +221,7 @@ void CodeClassDumper::dumpMethodArgs(std::stringstream &out, Method *method, boo
 
 std::string CodeClassDumper::printType(TypePtr * typePtr, bool compilable) {
     std::string name = typePtr->type;
-    if (compilable)
+    if (compilable && !typePtr->isBaseType)
         name = clearString(name);
 
     return (typePtr->isConstant ? std::string("const ") : "") + name + (typePtr->isReference ? "&" : "") + (typePtr->isPointer ? " *" : "");

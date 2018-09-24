@@ -47,6 +47,7 @@ static std::string accesibilityNames[] = {"none", "public", "private", "protecte
 class TypePtr {
 public:
     std::string type;
+    bool isBaseType = false;
     bool isPointer = false;
     bool isConstant = false;
     bool isReference = false;
