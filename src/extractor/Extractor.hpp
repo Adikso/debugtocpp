@@ -10,7 +10,7 @@ using namespace debugtocpp::types;
 namespace debugtocpp {
 
 enum ExtractResult {
-    ERR_FILE_OPEN, INVALID_FILE, UNSUPPORTED_VERSION, OK, UNKNOWN_ERROR
+    ERR_FILE_OPEN, INVALID_FILE, UNSUPPORTED_VERSION, OK, UNKNOWN_ERROR, MISSING_DEBUG
 };
 
 class Extractor {

@@ -23,7 +23,7 @@ ExtractResult debugtocpp::dwarf::DWARFExtractor::load(std::string filename, int 
         }
     } catch (::dwarf::format_error &e) {
         if (strcmp(e.what(), "required .debug_info section missing") == 0) {
-            return ExtractResult::INVALID_FILE;
+            return ExtractResult::MISSING_DEBUG;
         }
     }
 

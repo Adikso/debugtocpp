@@ -72,6 +72,8 @@ int main(int argc, char *argv[]) {
 
         if (pdbExtractResult == ExtractResult::ERR_FILE_OPEN) {
             std::cout << "File not found";
+        } else if (dwarfExtractResult == ExtractResult::MISSING_DEBUG || elfExtractResult == ExtractResult::MISSING_DEBUG) {
+            std::cout << "File does not contain debug information";
         } else {
             std::cout << "Unsupported format";
         }

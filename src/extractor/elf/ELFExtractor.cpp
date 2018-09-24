@@ -34,6 +34,10 @@ ExtractResult debugtocpp::elf::ELFExtractor::load(std::string filename, int imag
         symtab = section.as_symtab();
     }
 
+    if (!symtab.valid()) {
+        return ExtractResult::MISSING_DEBUG;
+    }
+
     return ExtractResult::OK;
 }
 
