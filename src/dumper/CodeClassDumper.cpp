@@ -99,7 +99,13 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
     if (!cls->fields.empty() && !cls->fullyDefinedMethods.empty())
         out << "\n";
 
+    bool hadDestructor = false;
     for (auto method : (config.showAsPointers ? cls->fullyDefinedMethods : cls->allMethods)) {
+        if (method->name[0] == '~' && config.compilable && !config.showAsPointers) {
+            if (hadDestructor) continue; // Don't show multiple destructors in compilable mode (non pointers)
+            else hadDestructor = true;
+        }
+
         if (method->accessibility != currentAccesibility) {
             out << accesibilityNames[method->accessibility] << ":\n";
             currentAccesibility = method->accessibility;
