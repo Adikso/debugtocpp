@@ -104,7 +104,8 @@ std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
             }
             case ::elf::stt::object: {
                 std::string fieldName = cname->printname(cname->name);
-                TypePtr * fieldType = new TypePtr("int", false);
+
+                TypePtr * fieldType = new TypePtr(getTypeFromSize(data.size), false);
 
                 auto * field = new Field(fieldName, fieldType, 0);
                 field->isStatic = true;
@@ -344,6 +345,35 @@ bool ELFExtractor::isDuplicated(Type * type, Method *method) {
     }
 
     return false;
+}
+
+std::string ELFExtractor::getTypeFromSize(int size) {
+    switch (elf->get_hdr().ei_class) {
+        case ::elf::elfclass::_32:
+            switch (size) {
+                case 1:
+                    return "char";
+                case 2:
+                    return "short";
+                case 8:
+                    return "double"; // or long long
+                case 4:
+                default:
+                    return "int";
+            }
+        case ::elf::elfclass::_64:
+            switch (size) {
+                case 1:
+                    return "char";
+                case 2:
+                    return "short";
+                case 8:
+                    return "long"; // or pointer
+                case 4:
+                default:
+                    return "int";
+            }
+    }
 }
 
 }

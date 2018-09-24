@@ -22,6 +22,7 @@ private:
     Method *getMethod(::elf::sym * element);
     TypePtr * getTypePtr(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype);
     bool isDuplicated(Type * type, Method * method);
+    std::string getTypeFromSize(int size);
 
     ::elf::elf * elf;
     ::elf::symtab symtab;
