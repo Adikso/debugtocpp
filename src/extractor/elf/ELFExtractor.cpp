@@ -51,15 +51,17 @@ std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
     for (auto sym : symtab) {
         auto &data = sym.get_data();
         auto cname = demangler->demangleToClass(sym.get_name());
+        auto mangled = sym.get_name();
 
         // Ignore symbols with different name than specified
         if (cname->name.empty()) {
             continue;
         }
 
+        std::string symDemangledName = cname->printname(cname->name);
         std::string name; // garbage solution
         for (std::string &typeName : typesList) {
-            if (cname->printname(cname->name).rfind(typeName, 0) == 0) {
+            if (symDemangledName.rfind(typeName, 0) == 0) {
                 name = typeName;
                 break;
             }
@@ -119,7 +121,7 @@ std::list<std::string> ELFExtractor::getTypesList(bool showStructs) {
     for (auto sym : symtab) {
         auto &data = sym.get_data();
 
-        std::string typedefName = demangleTypedef(sym.get_name());
+        std::string typedefName = demangleName(sym.get_name());
         if (typedefName.empty()) {
             continue;
         }
@@ -160,11 +162,13 @@ Method *ELFExtractor::getMethod(::elf::sym *sym) {
     auto cname = demangler->demangleToClass(sym->get_name());
 
     auto * method = new Method();
-    method->name = cname->printname(cname->name);
 
     if (cname->printname(cname->name).find("::") == std::string::npos) {
+        // Handle constructors and destructors
+        method->name = demangleName(sym->get_name());
         method->returnType = new TypePtr("", false);
     } else {
+        method->name = cname->printname(cname->name);
         method->returnType = new TypePtr("int", (bool) cname->return_type.is_pointer); // TODO other types?
     }
 

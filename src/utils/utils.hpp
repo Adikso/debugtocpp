@@ -40,13 +40,14 @@ inline int isDirectory(const std::string &path) {
     return S_ISDIR(statbuf.st_mode);
 }
 
-// This is hack TODO
-inline std::string demangleTypedef(const std::string &mangled) {
+// This is hack
+inline std::string demangleName(const std::string &mangled) {
     std::string prefix = "_ZT";
     std::string prefix2 = "_ZN";
     if (mangled.rfind(prefix, 0) == 0 || mangled.rfind(prefix2, 0) == 0) {
         std::string rest = mangled.substr(prefix.size()); // Get everything without prefix
 
+        // Skip all letters until size found
         while (!std::isdigit(rest[0])) {
             rest = rest.substr(1);
         }
@@ -59,8 +60,12 @@ inline std::string demangleTypedef(const std::string &mangled) {
             int length;
             ss >> length;
 
-            if (length == 0 || rest.empty())
+            if (length == 0 || rest.empty()) {
+                if (rest[0] == 'D') { // Destructor
+                    parts.back().insert(0, "~");
+                }
                 break;
+            }
 
             if (length + std::to_string(length).length() > rest.length())
                 break;
@@ -71,7 +76,8 @@ inline std::string demangleTypedef(const std::string &mangled) {
             rest = rest.substr(std::to_string(length).length() + length);
         }
 
-        if (mangled.rfind(prefix2, 0) == 0) {
+        // Leave class name only
+        if (parts.size() > 1 && mangled.rfind(prefix2, 0) == 0) {
             parts.pop_back();
         }
 
