@@ -72,6 +72,10 @@ std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
         switch (data.type()) {
             case ::elf::stt::func: {
                 Method * method = getMethod(&sym);
+                if (isDuplicated(type, method)) {
+                    continue;
+                }
+
                 for (auto &arg : method->args) {
                     if (arg->typePtr->isPointer) {
                         type->dependentTypes.push_back(arg->typePtr->type);
@@ -306,6 +310,16 @@ TypePtr * ELFExtractor::getTypePtr(retdec::demangler::cName &cname, retdec::dema
     typePtr->isBaseType = ttype.type == cName::ttype::TT_BUILTIN;
 
     return typePtr;
+}
+
+bool ELFExtractor::isDuplicated(Type * type, Method *method) {
+    for (auto &m : type->allMethods) {
+        if (m->address == method->address) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 }
