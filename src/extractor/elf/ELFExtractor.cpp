@@ -34,6 +34,16 @@ ExtractResult debugtocpp::elf::ELFExtractor::load(std::string filename, int imag
         symtab = section.as_symtab();
     }
 
+    // Try to find dynsym if symtab not found
+    if (!symtab.valid()) {
+        for (auto &section : elf->sections()) {
+            if (section.get_hdr().type != ::elf::sht::dynsym)
+                continue;
+
+            symtab = section.as_symtab();
+        }
+    }
+
     if (!symtab.valid()) {
         return ExtractResult::MISSING_DEBUG;
     }
