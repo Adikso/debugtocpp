@@ -161,7 +161,13 @@ Method *ELFExtractor::getMethod(::elf::sym *sym) {
 
     auto * method = new Method();
     method->name = cname->printname(cname->name);
-    method->returnType = new TypePtr("int", (bool) cname->return_type.is_pointer); // TODO other types?
+
+    if (cname->printname(cname->name).find("::") == std::string::npos) {
+        method->returnType = new TypePtr("", false);
+    } else {
+        method->returnType = new TypePtr("int", (bool) cname->return_type.is_pointer); // TODO other types?
+    }
+
     method->address = data.value;
     method->callType = cname->function_call; // inne wartości
     method->isStatic = cname->is_static;
