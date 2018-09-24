@@ -67,6 +67,15 @@ Type *PDBExtractor::getType(std::string name) {
             type->fields.push_back(field);
 
         }
+
+        // Search global variables for addresses
+        for (auto &globalVar : *pdb.get_global_variables()) {
+            for (auto &field : type->fields) {
+                if (globalVar.second.name == name + "::" + field->name) {
+                    field->address = (unsigned long) globalVar.second.address;
+                }
+            }
+        }
     }
 
     // Load all methods
