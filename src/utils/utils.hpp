@@ -48,7 +48,7 @@ inline std::string demangleName(const std::string &mangled) {
         std::string rest = mangled.substr(prefix.size()); // Get everything without prefix
 
         // Skip all letters until size found
-        while (!std::isdigit(rest[0])) {
+        while (!std::isdigit(rest[0]) && rest.size() > 1) {
             rest = rest.substr(1);
         }
 
