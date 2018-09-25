@@ -75,7 +75,7 @@ std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
         std::string symDemangledName = cname->printname(cname->name);
         std::string name; // garbage solution
         for (std::string &typeName : typesList) {
-            if (symDemangledName.rfind(typeName, 0) == 0) {
+            if (symDemangledName.substr(0, symDemangledName.find(':')) == typeName) {
                 name = typeName;
                 break;
             }
