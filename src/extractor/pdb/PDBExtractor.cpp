@@ -114,16 +114,6 @@ Type *PDBExtractor::getType(std::string name) {
     return type;
 }
 
-Method *PDBExtractor::getMethod(std::string name) {
-    for (auto &func : *this->pdb.get_functions()) {
-        if (strcmp(func.second->name, name.c_str()) == 0) {
-            return getMethod(func.second);
-        }
-    }
-
-    return nullptr;
-}
-
 Method *PDBExtractor::getMethod(PDBFunction *func) {
     auto * method = new Method();
 

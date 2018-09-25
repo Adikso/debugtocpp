@@ -243,10 +243,6 @@ std::list<std::string> debugtocpp::dwarf::DWARFExtractor::getTypesList(bool show
     return std::list<std::string>();
 }
 
-Method *debugtocpp::dwarf::DWARFExtractor::getMethod(std::string name) {
-    return nullptr;
-}
-
 std::vector<Type *> DWARFExtractor::getTypes(std::list<std::string> typesList) {
     std::vector<Type *> types;
     // No optimization here yet

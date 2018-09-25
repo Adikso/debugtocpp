@@ -150,28 +150,6 @@ std::list<std::string> ELFExtractor::getTypesList(bool showStructs) {
     return names;
 }
 
-Method *ELFExtractor::getMethod(std::string name) {
-    for (auto sym : symtab) {
-        auto &data = sym.get_data();
-        auto cname = demangler->demangleToClass(sym.get_name());
-
-        if (cname->name.empty() || cname->name[0].un != name) { // Złe porównanie anzwy?
-            continue;
-        }
-
-        switch (data.type()) {
-            case ::elf::stt::func: {
-                if (cname->printname(cname->name) == name) {
-                    return getMethod(&sym);
-                }
-                break;
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 Method *ELFExtractor::getMethod(::elf::sym *sym) {
     auto &data = sym->get_data();
     auto cname = demangler->demangleToClass(sym->get_name());

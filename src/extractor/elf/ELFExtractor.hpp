@@ -16,8 +16,6 @@ public:
     std::vector<Type *> getTypes(std::list<std::string> typesList) override;
     std::list<std::string> getTypesList(bool showStructs) override;
 
-    Method *getMethod(std::string name) override;
-
 private:
     Method *getMethod(::elf::sym * element);
     TypePtr * getTypePtr(retdec::demangler::cName &cname, retdec::demangler::cName::type_t &ttype);

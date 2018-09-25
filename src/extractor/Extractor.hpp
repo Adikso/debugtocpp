@@ -22,8 +22,6 @@ public:
 
     virtual std::list<std::string> getTypesList(bool showStructs) = 0;
 
-    virtual Method *getMethod(std::string name) = 0;
-
 protected:
     std::list<std::string> allDependentClasses;
 };
