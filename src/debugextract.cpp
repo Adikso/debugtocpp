@@ -52,36 +52,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    PDBExtractor pdbExtractor;
-    ELFExtractor elfExtractor;
-    DWARFExtractor dwarfExtractor;
-
-    ExtractResult pdbExtractResult = pdbExtractor.load(v[0], args["base"].as<int>());
-    ExtractResult elfExtractResult = elfExtractor.load(v[0], args["base"].as<int>());
-    ExtractResult dwarfExtractResult = dwarfExtractor.load(v[0], args["base"].as<int>());
-
-    Extractor * extractor;
-    if (pdbExtractResult == ExtractResult::OK) {
-        extractor = &pdbExtractor;
-    } else if (dwarfExtractResult == ExtractResult::OK) {
-        extractor = &dwarfExtractor;
-    } else if (elfExtractResult == ExtractResult::OK) {
-        extractor = &elfExtractor;
-    } else {
-        std::cout << "Failed to load file: ";
-
-        if (pdbExtractResult == ExtractResult::ERR_FILE_OPEN) {
-            std::cout << "File not found";
-        } else if (dwarfExtractResult == ExtractResult::MISSING_DEBUG || elfExtractResult == ExtractResult::MISSING_DEBUG) {
-            std::cout << "File does not contain debug information";
-        } else {
-            std::cout << "Unsupported format";
-        }
-
-        std::cout << std::endl;
-        return 2;
-    }
-
+    Extractor * extractor = getExtractorForFile(v[0], args["base"].as<int>());
     DumpConfig config = argsToConfig(args);
 
     std::string outputPath;
@@ -104,12 +75,7 @@ int main(int argc, char *argv[]) {
     Analyser analyser{config};
 
     if (args.count("list")) {
-        for (auto &type : extractor->getTypesList(false)) {
-            if (!analyser.isCompilerGeneratedType(type)) {
-                std::cout << type << std::endl;
-            }
-        }
-        return 0;
+        list(extractor, analyser);
     }
 
     std::list<std::string> names;
@@ -119,8 +85,9 @@ int main(int argc, char *argv[]) {
         names = split(v[1], ',');
     }
 
-    std::vector<Type *> types = getTypes(extractor, analyser, names);
-    std::vector<std::string> dumpOut = dump(types, config);
+    std::vector<Type *> types = extractor->getTypes(std::move(names));
+    ClassDumper * dumper = config.json ? (ClassDumper *) new JsonClassDumper : new CodeClassDumper;
+    std::vector<std::string> dumpOut = dumper->dump(std::move(types), config);
 
     if (config.toDirectory) {
         std::string extension = (config.json ? "json" : "hpp");
@@ -133,13 +100,7 @@ int main(int argc, char *argv[]) {
             file.close();
         }
     } else {
-        std::stringstream outStream;
-
-        for (auto &type : dumpOut) {
-            outStream << type << std::endl;
-        }
-
-        std::string out = outStream.str();
+        std::string out = join(dumpOut, "\n");
 
         if (args.count("output")) {
             std::ofstream file;
@@ -153,6 +114,48 @@ int main(int argc, char *argv[]) {
     }
 
     return 0;
+}
+
+void list(Extractor * extractor, Analyser &analyser) {
+    for (auto &type : extractor->getTypesList(false)) {
+        if (!analyser.isCompilerGeneratedType(type)) {
+            std::cout << type << std::endl;
+        }
+    }
+}
+
+Extractor * getExtractorForFile(const std::string &filename, int base) {
+    auto * pdbExtractor = new PDBExtractor;
+    auto * elfExtractor = new ELFExtractor;
+    auto * dwarfExtractor = new DWARFExtractor;
+
+    ExtractResult pdbExtractResult = pdbExtractor->load(filename, base);
+    ExtractResult elfExtractResult = elfExtractor->load(filename, base);
+    ExtractResult dwarfExtractResult = dwarfExtractor->load(filename, base);
+
+    if (pdbExtractResult == ExtractResult::OK) {
+        return pdbExtractor;
+    }
+    else if (dwarfExtractResult == ExtractResult::OK) {
+        return dwarfExtractor;
+    }
+    else if (elfExtractResult == ExtractResult::OK) {
+        return elfExtractor;
+    }
+
+    std::stringstream errorMessage;
+    errorMessage << "Failed to load file: ";
+
+    if (pdbExtractResult == ExtractResult::ERR_FILE_OPEN) {
+        errorMessage << "File not found";
+    } else if (dwarfExtractResult == ExtractResult::MISSING_DEBUG || elfExtractResult == ExtractResult::MISSING_DEBUG) {
+        errorMessage << "File does not contain debug information";
+    } else {
+        errorMessage << "Unsupported format";
+    }
+
+    errorMessage << std::endl;
+    throw errorMessage.str();
 }
 
 DumpConfig argsToConfig(const cxxopts::ParseResult &args) {
@@ -170,11 +173,3 @@ DumpConfig argsToConfig(const cxxopts::ParseResult &args) {
     return config;
 }
 
-std::vector<Type *> getTypes(Extractor * extractor, Analyser &analyser, std::list<std::string> names) {
-    return extractor->getTypes(std::move(names));
-}
-
-std::vector<std::string> dump(std::vector<Type *> types, DumpConfig config) {
-    ClassDumper * dumper = config.json ? (ClassDumper *) new JsonClassDumper : new CodeClassDumper;
-    return dumper->dump(std::move(types), config);
-}

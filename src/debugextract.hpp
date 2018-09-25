@@ -16,7 +16,8 @@ using namespace debugtocpp::pdb;
 using namespace debugtocpp::dwarf;
 
 DumpConfig argsToConfig(const cxxopts::ParseResult &args);
-std::vector<Type *> getTypes(Extractor * extractor, Analyser &analyser, std::list<std::string> names);
-std::vector<std::string> dump(std::vector<Type *> types, DumpConfig config);
+Extractor * getExtractorForFile(const std::string &filename, int base);
+
+void list(Extractor * extractor, Analyser &analyser);
 
 #endif //DEBUGTOCPP_DEBUGEXTRACT_HPP

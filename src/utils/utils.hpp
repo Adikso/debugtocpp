@@ -33,6 +33,16 @@ inline std::list<std::string> split(const std::string &input, char delimiter) {
     return tokens;
 }
 
+inline std::string join(std::vector<std::string> &source, std::string delim) {
+    std::string out;
+
+    for (auto &type : source) {
+        out.append(type).append(delim);
+    }
+
+    return out;
+}
+
 inline int isDirectory(const std::string &path) {
     struct stat statbuf{};
     if (stat(path.c_str(), &statbuf) != 0)
