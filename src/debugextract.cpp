@@ -52,7 +52,14 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    Extractor * extractor = getExtractorForFile(v[0], args["base"].as<int>());
+    Extractor * extractor;
+    try {
+        extractor = getExtractorForFile(v[0], args["base"].as<int>());
+    } catch (std::string &error){
+        std::cout << error << std::endl;
+        return 2;
+    }
+
     DumpConfig config = argsToConfig(args);
 
     std::string outputPath;
