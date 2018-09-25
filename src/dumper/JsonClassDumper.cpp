@@ -47,6 +47,7 @@ json JsonClassDumper::dumpAsJsonObj(Type *cls) {
         js["fields"][i]["accessibility"] = accesibilityNames[field->accessibility];
         js["fields"][i]["isStatic"] = field->isStatic;
         js["fields"][i]["offset"] = field->offset;
+        js["fields"][i]["address"] = field->address;
     }
 
     for (int i = 0; i < cls->allMethods.size(); i++) {
