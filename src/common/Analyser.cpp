@@ -16,9 +16,13 @@ bool Analyser::process(Type *type) {
     }
 
     for (auto &method : type->allMethods) {
-        if (config.noCompilerGenerated && isCompilerGenerated(method)) {
-            type->allMethods.erase(std::remove(type->allMethods.begin(), type->allMethods.end(), method), type->allMethods.end());
+        if (isCompilerGenerated(method)) {
+            method->isCompilerGenerated = true;
+            if (config.noCompilerGenerated) {
+                type->allMethods.erase(std::remove(type->allMethods.begin(), type->allMethods.end(), method), type->allMethods.end());
+            }
         }
+
     }
 
     return true;
