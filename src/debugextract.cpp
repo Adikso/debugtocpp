@@ -87,6 +87,8 @@ int main(int argc, char *argv[]) {
     }
 
     std::vector<Type *> types = extractor->getTypes(std::move(names));
+    analyser.process(types);
+
     ClassDumper * dumper = config.json ? (ClassDumper *) new JsonClassDumper : new CodeClassDumper;
     std::vector<std::string> dumpOut = dumper->dump(std::move(types), config);
 

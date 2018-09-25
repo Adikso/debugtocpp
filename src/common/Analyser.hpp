@@ -12,6 +12,7 @@ class Analyser {
 public:
     Analyser(const DumpConfig &config) : config(config) {}
 
+    void process(std::vector<Type *> &types);
     bool process(Type * type);
     bool isCompilerGeneratedType(std::string &name);
     bool isCompilerGenerated(Type * type);

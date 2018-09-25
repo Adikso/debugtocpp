@@ -2,6 +2,14 @@
 
 #include "Analyser.hpp"
 
+void Analyser::process(std::vector<Type *> &types) {
+    for (auto &type : types) {
+        if (!process(type)) {
+            types.erase(std::remove(types.begin(), types.end(), type), types.end());
+        }
+    }
+}
+
 bool Analyser::process(Type *type) {
     if (config.noCompilerGenerated && isCompilerGenerated(type)) {
         return false;
@@ -35,3 +43,5 @@ bool Analyser::isCompilerGenerated(Method *method) {
 
     return method->isCompilerGenerated || method->name.rfind("std::", 0) == 0 || std::count(msvc.begin(), msvc.end(), method->name);
 }
+
+
