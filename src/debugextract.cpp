@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
 
     if (args.count("list")) {
         list(extractor, analyser);
+        return 0;
     }
 
     std::list<std::string> names;
