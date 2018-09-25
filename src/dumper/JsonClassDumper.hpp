@@ -17,6 +17,7 @@ public:
 
 private:
     json dumpAsJsonObj(Type *cls);
+    void setType(json &obj, TypePtr * typePtr);
 };
 
 }

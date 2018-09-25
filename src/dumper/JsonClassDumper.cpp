@@ -41,7 +41,10 @@ json JsonClassDumper::dumpAsJsonObj(Type *cls) {
     for (int i = 0; i < cls->fields.size(); i++) {
         auto * field = cls->fields[i];
         js["fields"][i]["name"] = field->name;
-        js["fields"][i]["type"] = field->typePtr->type + (field->typePtr->isPointer ? " * " : "");
+
+        setType(js["fields"][i]["type"], field->typePtr);
+
+        js["fields"][i]["accessibility"] = accesibilityNames[field->accessibility];
         js["fields"][i]["isStatic"] = field->isStatic;
         js["fields"][i]["offset"] = field->offset;
     }
@@ -49,19 +52,35 @@ json JsonClassDumper::dumpAsJsonObj(Type *cls) {
     for (int i = 0; i < cls->allMethods.size(); i++) {
         auto * method = cls->allMethods[i];
         js["methods"][i]["name"] = method->name;
-        js["methods"][i]["returnType"] = method->returnType->type + (method->returnType->isPointer ? " * " : "");
+
+        setType(js["methods"][i]["returnType"], method->returnType);
+
         js["methods"][i]["isStatic"] = method->isStatic;
         js["methods"][i]["isVariadic"] = method->isVariadic;
         js["methods"][i]["isVirtual"] = method->isVirtual;
+        js["methods"][i]["isCompilerGenerated"] = method->isCompilerGenerated;
+
+        js["methods"][i]["accessibility"] = accesibilityNames[method->accessibility];
         js["methods"][i]["address"] = method->address;
         js["methods"][i]["callType"] = callingConventionNames[method->callType];
 
         for (int j = 0; j < method->args.size(); j++) {
             Argument *arg = method->args[j];
             js["methods"][i]["args"][j]["name"] = arg->name;
-            js["methods"][i]["args"][j]["type"] = arg->typePtr->type + (arg->typePtr->isPointer ? " * " : "");
+
+            setType(js["methods"][i]["args"][j], arg->typePtr);
         }
     }
 
     return js;
+}
+
+void JsonClassDumper::setType(json &obj, TypePtr *typePtr) {
+    obj["type"] = typePtr->type;
+    obj["isPointer"] = typePtr->isPointer;
+    obj["isBaseType"] = typePtr->isBaseType;
+    obj["isConstant"] = typePtr->isConstant;
+    obj["isReference"] = typePtr->isReference;
+    obj["isArray"] = typePtr->isArray;
+    obj["arraySize"] = typePtr->arraySize;
 }
