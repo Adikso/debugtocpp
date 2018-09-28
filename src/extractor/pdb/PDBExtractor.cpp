@@ -87,14 +87,21 @@ Type *PDBExtractor::getType(std::string name) {
             if (strcmp(parentClass->class_name, type->name.c_str()) == 0) {
                 Method *method = getMethod(func.second);
 
+                bool found = false;
                 // Apply more details to already found methods
                 for (int i = 0; i < type->allMethods.size(); i++) {
                     if (type->allMethods[i]->name == method->name.substr(type->name.size() + 2)) {
                         type->allMethods[i]->args = method->args;
                         type->allMethods[i]->address = method->address;
                         type->allMethods[i]->isStatic = method->isStatic;
-                        // STATIC nie zawsze się pojawia i ogólnie problemy
+
+                        found = true;
+                        break;
                     }
+                }
+
+                if (!found) {
+                    type->allMethods.push_back(method);
                 }
 
                 type->fullyDefinedMethods.push_back(method);
@@ -128,6 +135,7 @@ Method *PDBExtractor::getMethod(PDBFunction *func) {
     method->callType = func->type_def->func_calltype;
     method->isStatic = func->type_def->func_thistype_index == 0;
     method->isVariadic = func->type_def->func_is_variadic;
+    method->accessibility = Accessibility::PUBLIC;
 
     std::vector<Argument *> args;
     for (auto &fArg : func->arguments) {
