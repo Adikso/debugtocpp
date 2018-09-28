@@ -101,6 +101,7 @@ Type *PDBExtractor::getType(std::string name) {
                 }
 
                 if (!found) {
+                    method->name = method->name.substr(type->name.size() + 2);
                     type->allMethods.push_back(method);
                 }
 
