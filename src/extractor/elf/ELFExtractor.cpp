@@ -98,12 +98,20 @@ std::vector<Type *> ELFExtractor::getTypes(std::list<std::string> typesList) {
                     }
                 }
 
+                if (method->name.rfind(type->name + "::") == 0) {
+                    method->name = method->name.substr(type->name.size() + 2);
+                }
+
                 type->allMethods.push_back(method);
                 type->fullyDefinedMethods.push_back(method);
                 break;
             }
             case ::elf::stt::object: {
                 std::string fieldName = cname->printname(cname->name);
+
+                if (fieldName.rfind(type->name + "::") == 0) {
+                    fieldName = fieldName.substr(type->name.size() + 2);
+                }
 
                 TypePtr * fieldType = new TypePtr(getTypeFromSize(data.size), false);
 
