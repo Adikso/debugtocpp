@@ -18,7 +18,7 @@ public:
 private:
     retdec::pdbparser::PDBFile pdb;
 
-    TypePtr * getReturnTypeStr(PDBTypeDef *type);
+    TypePtr * getReturnType(PDBTypeDef *type, int flags = 0);
     Method *getMethod(PDBFunction * func);
     Method *getMethod(PDBTypeFieldMember *fieldMember);
 

@@ -57,7 +57,7 @@ Type *PDBExtractor::getType(std::string name) {
             }
 
             // Load fields
-            Field * field = new Field(pdbField.Member.name, getReturnTypeStr(pdbField.Member.type_def), pdbField.Member.offset);
+            Field * field = new Field(pdbField.Member.name, getReturnType(pdbField.Member.type_def), pdbField.Member.offset);
             field->accessibility = Accessibility::PUBLIC;
 
             if (pdbField.field_type == PDBFIELD_STMEMBER) {
@@ -129,7 +129,7 @@ Method *PDBExtractor::getMethod(PDBFunction *func) {
     if (method->name[0] == '~') { // Fixes destructor returning void
         method->returnType = new TypePtr("", false);
     } else {
-        method->returnType = getReturnTypeStr(func->type_def->func_rettype_def);
+        method->returnType = getReturnType(func->type_def->func_rettype_def);
     }
 
     method->address = func->address;
@@ -142,7 +142,7 @@ Method *PDBExtractor::getMethod(PDBFunction *func) {
     for (auto &fArg : func->arguments) {
         PDBTypeDef *argumentType = pdb.get_types_container()->get_type_by_index(fArg.type_index);
 
-        Argument *arg = new Argument(fArg.name, getReturnTypeStr(argumentType));
+        Argument *arg = new Argument(fArg.name, getReturnType(argumentType));
         args.push_back(arg);
     }
     method->args = args;
@@ -158,7 +158,7 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
     if (method->name[0] == '~') { // Fixes destructor returning void
         method->returnType = new TypePtr("", false);
     } else {
-        method->returnType = getReturnTypeStr(pdbTypeFunction->func_rettype_def);
+        method->returnType = getReturnType(pdbTypeFunction->func_rettype_def);
     }
 
     method->callType = pdbTypeFunction->func_calltype;
@@ -168,22 +168,27 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
     method->accessibility = Accessibility::PUBLIC;
 
     for (int i = 0; i < pdbTypeFunction->func_args_count; i++) {
-        Argument * arg = new Argument("", getReturnTypeStr(pdbTypeFunction->func_args[i].type_def));
+        Argument * arg = new Argument("", getReturnType(pdbTypeFunction->func_args[i].type_def));
         method->args.push_back(arg);
     }
 
     return method;
 }
 
-TypePtr * PDBExtractor::getReturnTypeStr(PDBTypeDef *type) {
+TypePtr * PDBExtractor::getReturnType(PDBTypeDef *type, int flags) {
     if (dynamic_cast<PDBTypeBase *>(type)) {
-        TypePtr *typePtr = new TypePtr(((PDBTypeBase *) type)->description, false);
+        auto * typeBase = (PDBTypeBase *) type;
+        TypePtr *typePtr = new TypePtr(typeBase->description, false);
         typePtr->isBaseType = true;
+
+        if (flags & 1) typePtr->isConstant = true;
+        if (flags & 2) typePtr->isPointer = true;
+
         return typePtr;
     } else if (dynamic_cast<PDBTypeConst *>(type)) {
-        return getReturnTypeStr(((PDBTypeConst *) type)->const_utype_def); // TODO: Add "const" to argument
+        return getReturnType(((PDBTypeConst *) type)->const_utype_def, flags | 1);
     } else if (dynamic_cast<PDBTypePointer *>(type)) {
-        return getReturnTypeStr(((PDBTypePointer *) type)->ptr_utype_def); // Follows pointer to the type
+        return getReturnType(((PDBTypePointer *) type)->ptr_utype_def, flags | 2); // Follows pointer to the type
     }
 
     auto pdbType = new PDBUniversalType(type);
@@ -196,7 +201,12 @@ TypePtr * PDBExtractor::getReturnTypeStr(PDBTypeDef *type) {
     allDependentClasses.push_back(name);
 
     delete(pdbType);
-    return new TypePtr(name, true);
+    auto * typePtr = new TypePtr(name, true);
+
+    if (flags & 1) typePtr->isConstant = true;
+    if (flags & 2) typePtr->isPointer = true;
+
+    return typePtr;
 }
 
 PDBTypeDef *PDBExtractor::findFullDeclaration(std::string name) {
