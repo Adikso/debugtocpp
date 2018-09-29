@@ -18,6 +18,7 @@ public:
     std::vector<Type *> getTypes(std::list<std::string> typesList) override;
 
     std::list<std::string> getTypesList(bool showStructs) override;
+    std::vector<Field *> getAllGlobalVariables() override;
 
 private:
     ::elf::elf * elf;

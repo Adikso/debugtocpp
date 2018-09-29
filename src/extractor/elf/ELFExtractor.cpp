@@ -362,5 +362,30 @@ std::string ELFExtractor::getTypeFromSize(int size) {
     }
 }
 
+std::vector<Field *> ELFExtractor::getAllGlobalVariables() {
+    std::vector<Field *> fields;
+
+    for (auto sym : symtab) {
+        auto &data = sym.get_data();
+        auto demangled = demangleName(sym.get_name(), true);
+
+        if (data.type() != ::elf::stt::object || data.value == 0 || (sym.get_name().rfind("_Z", 0) == 0 && sym.get_name().rfind("_ZN", 0) != 0)) {
+            continue;
+        }
+
+        TypePtr * fieldType = new TypePtr(getTypeFromSize(data.size), false);
+
+        auto name = !demangled.empty() ? demangled : sym.get_name();
+        auto * field = new Field(name, fieldType, 0);
+        field->isStatic = true;
+        field->address = data.value;
+        field->accessibility = Accessibility::PUBLIC;
+
+        fields.push_back(field);
+    }
+
+    return fields;
+}
+
 }
 }

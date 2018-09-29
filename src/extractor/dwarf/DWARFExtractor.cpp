@@ -253,6 +253,10 @@ std::vector<Type *> DWARFExtractor::getTypes(std::list<std::string> typesList) {
     return types;
 }
 
+std::vector<Field *> DWARFExtractor::getAllGlobalVariables() {
+    return std::vector<Field *>();
+}
+
 
 }
 }

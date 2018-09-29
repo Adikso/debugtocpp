@@ -21,6 +21,7 @@ public:
     virtual std::vector<Type *> getTypes(std::list<std::string> typesList) = 0;
 
     virtual std::list<std::string> getTypesList(bool showStructs) = 0;
+    virtual std::vector<Field *> getAllGlobalVariables() = 0;
 
 protected:
     std::list<std::string> allDependentClasses;

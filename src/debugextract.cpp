@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
             ("a,all", "Dump all classes (Used with --output dumps compilable header files to directory)")
             ("l,list", "List all classes")
             ("o,output", "Output path", cxxopts::value<std::string>())
+            ("v,vars", "Show all global variables")
             ("positional", "...", cxxopts::value<std::vector<std::string>>());
     options.parse_positional({"input", "class", "positional"});
 
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]) {
     }
 
     auto &v = args["positional"].as<std::vector<std::string>>();
-    if ((v.size() < 2 && !(args.count("all") || args.count("list"))) || v.empty()) {
+    if ((v.size() < 2 && !(args.count("all") || args.count("list") || args.count("vars"))) || v.empty()) {
         std::cout << options.help({"", "display"}) << std::endl;
         return 1;
     }
@@ -80,24 +81,35 @@ int main(int argc, char *argv[]) {
     }
 
     Analyser analyser{config};
+    ClassDumper * dumper = config.json ? (ClassDumper *) new JsonClassDumper : new CodeClassDumper;
 
     if (args.count("list")) {
         list(extractor, analyser);
         return 0;
     }
 
-    std::list<std::string> names;
-    if (args.count("all") > 0) {
-        names = extractor->getTypesList(false);
+    std::vector<Type *> types;
+    std::vector<std::string> dumpOut;
+
+    if (args.count("vars")) {
+        Type * type = new Type("GlobalVariables");
+        type->fields = extractor->getAllGlobalVariables();
+
+        types.push_back(type);
+        dumpOut.push_back(dumper->dump(type, config));
     } else {
-        names = split(v[1], ',');
+        std::list<std::string> names;
+        if (args.count("all") > 0) {
+            names = extractor->getTypesList(false);
+        } else {
+            names = split(v[1], ',');
+        }
+
+        types = extractor->getTypes(std::move(names));
+        analyser.process(types);
+
+        dumpOut = dumper->dump(std::move(types), config);
     }
-
-    std::vector<Type *> types = extractor->getTypes(std::move(names));
-    analyser.process(types);
-
-    ClassDumper * dumper = config.json ? (ClassDumper *) new JsonClassDumper : new CodeClassDumper;
-    std::vector<std::string> dumpOut = dumper->dump(std::move(types), config);
 
     if (config.toDirectory) {
         std::string extension = (config.json ? "json" : "hpp");

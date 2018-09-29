@@ -258,6 +258,22 @@ std::vector<Type *> PDBExtractor::getTypes(std::list<std::string> typesList) {
     return types;
 }
 
+std::vector<Field *> PDBExtractor::getAllGlobalVariables() {
+    std::vector<Field *> fields;
+
+    for (auto &var : *pdb.get_global_variables()) {
+        auto * field = new Field();
+        field->name = var.second.name;
+        field->address = var.second.address;
+        field->accessibility = Accessibility::PUBLIC;
+        field->typePtr = getReturnType(var.second.type_def);
+
+        fields.push_back(field);
+    }
+
+    return fields;
+}
+
 // PDBUniversalType methods
 
 std::string PDBUniversalType::getName() {

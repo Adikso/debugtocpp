@@ -51,7 +51,7 @@ inline int isDirectory(const std::string &path) {
 }
 
 // This is hack
-inline std::string demangleName(const std::string &mangled) {
+inline std::string demangleName(const std::string &mangled, bool leaveFull = false) {
     std::string prefix = "_ZT";
     std::string prefix2 = "_ZN";
     if (mangled.rfind(prefix, 0) == 0 || mangled.rfind(prefix2, 0) == 0) {
@@ -87,7 +87,7 @@ inline std::string demangleName(const std::string &mangled) {
         }
 
         // Leave class name only
-        if (parts.size() > 1 && mangled.rfind(prefix2, 0) == 0) {
+        if (parts.size() > 1 && mangled.rfind(prefix2, 0) == 0 && !leaveFull) {
             parts.pop_back();
         }
 
