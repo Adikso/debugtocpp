@@ -58,6 +58,20 @@ public:
     TypePtr(const std::string &type, bool isPointer) : type(type), isPointer(isPointer) {}
 
     TypePtr() {}
+
+    bool operator==(const TypePtr &rhs) const {
+        return type == rhs.type &&
+               isBaseType == rhs.isBaseType &&
+               isPointer == rhs.isPointer &&
+               isConstant == rhs.isConstant &&
+               isReference == rhs.isReference &&
+               isArray == rhs.isArray &&
+               arraySize == rhs.arraySize;
+    }
+
+    bool operator!=(const TypePtr &rhs) const {
+        return !(rhs == *this);
+    }
 };
 
 struct Argument {
@@ -67,6 +81,15 @@ struct Argument {
     Argument(const std::string &name, TypePtr *type) : name(name), typePtr(type) {}
 
     Argument() {}
+
+    bool operator==(const Argument &rhs) const {
+        return name == rhs.name &&
+               *typePtr == *rhs.typePtr;
+    }
+
+    bool operator!=(const Argument &rhs) const {
+        return !(rhs == *this);
+    }
 };
 
 struct Field {

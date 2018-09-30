@@ -91,6 +91,16 @@ Type *PDBExtractor::getType(std::string name) {
                 // Apply more details to already found methods
                 for (int i = 0; i < type->allMethods.size(); i++) {
                     if (type->allMethods[i]->name == method->name.substr(type->name.size() + 2)) {
+                        if (method->args.size() != type->allMethods[i]->args.size()) {
+                            continue;
+                        }
+
+                        for (int j = 0; j < method->args.size(); j++) {
+                            if (method->args[j] != type->allMethods[i]->args[j]) {
+                                goto continue_loop;
+                            }
+                        }
+
                         type->allMethods[i]->args = method->args;
                         type->allMethods[i]->address = method->address;
                         type->allMethods[i]->isStatic = method->isStatic;
@@ -98,6 +108,7 @@ Type *PDBExtractor::getType(std::string name) {
                         found = true;
                         break;
                     }
+                    continue_loop: continue;
                 }
 
                 if (!found) {
