@@ -81,15 +81,6 @@ struct Argument {
     Argument(const std::string &name, TypePtr *type) : name(name), typePtr(type) {}
 
     Argument() {}
-
-    bool operator==(const Argument &rhs) const {
-        return name == rhs.name &&
-               *typePtr == *rhs.typePtr;
-    }
-
-    bool operator!=(const Argument &rhs) const {
-        return !(rhs == *this);
-    }
 };
 
 struct Field {

@@ -91,12 +91,13 @@ Type *PDBExtractor::getType(std::string name) {
                 // Apply more details to already found methods
                 for (int i = 0; i < type->allMethods.size(); i++) {
                     if (type->allMethods[i]->name == method->name.substr(type->name.size() + 2)) {
-                        if (method->args.size() != type->allMethods[i]->args.size()) {
+                        int offset = (!method->args.empty() && method->args[0]->name == "this" ? 1 : 0);
+                        if (method->args.size() - offset != type->allMethods[i]->args.size()) {
                             continue;
                         }
 
-                        for (int j = 0; j < method->args.size(); j++) {
-                            if (method->args[j] != type->allMethods[i]->args[j]) {
+                        for (int j = offset; j < method->args.size(); j++) {
+                            if (*method->args[j]->typePtr != *type->allMethods[i]->args[j - offset]->typePtr) {
                                 goto continue_loop;
                             }
                         }
