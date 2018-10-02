@@ -109,6 +109,7 @@ public:
     bool isStatic = false;
     bool isVariadic = false;
     bool isVirtual = false;
+    int vftableOffset = -1;
     bool isCompilerGenerated = false;
 };
 

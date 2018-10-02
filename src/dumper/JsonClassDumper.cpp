@@ -63,6 +63,7 @@ json JsonClassDumper::dumpAsJsonObj(Type *cls) {
 
         js["methods"][i]["accessibility"] = accesibilityNames[method->accessibility];
         js["methods"][i]["address"] = method->address;
+        js["methods"][i]["vftableOffset"] = method->vftableOffset;
         js["methods"][i]["callType"] = callingConventionNames[method->callType];
 
         for (int j = 0; j < method->args.size(); j++) {

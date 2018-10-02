@@ -176,7 +176,8 @@ Method *PDBExtractor::getMethod(PDBTypeFieldMember *fieldMember) {
     method->callType = pdbTypeFunction->func_calltype;
     method->isStatic = pdbTypeFunction->func_thistype_index == 0;
     method->isVariadic = pdbTypeFunction->func_is_variadic;
-    method->isVirtual = fieldMember->offset == -1;
+    method->isVirtual = fieldMember->offset != -1;
+    method->vftableOffset = fieldMember->offset;
     method->accessibility = Accessibility::PUBLIC;
 
     for (int i = 0; i < pdbTypeFunction->func_args_count; i++) {
