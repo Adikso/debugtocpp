@@ -38,6 +38,10 @@ json JsonClassDumper::dumpAsJsonObj(Type *cls) {
         js["baseClass"] = cls->baseTypes[0]->name;
     }
 
+    for (int i = 0; i < cls->nestedTypes.size(); i++) {
+        js["nestedTypes"][i] = dumpAsJsonObj(cls->nestedTypes[i]);
+    }
+
     for (int i = 0; i < cls->fields.size(); i++) {
         auto * field = cls->fields[i];
         js["fields"][i]["name"] = field->name;

@@ -121,6 +121,7 @@ public:
     std::vector<Method *> fullyDefinedMethods;
     std::vector<Method *> allMethods;
     std::list<std::string> dependentTypes;
+    std::vector<Type *> nestedTypes;
 
     Type(std::string name) : name(std::move(name)) {}
 

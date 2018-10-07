@@ -23,7 +23,7 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
     std::string indent = std::string(static_cast<unsigned long>(config.indent), ' ');
 
     std::stringstream out;
-    out << "// Generated automatically by debugtocpp\n\n";
+    out << "// Generated automatically by debugtocpp\n";
 
     auto compilableClassName = clearString(cls->name);
 
@@ -70,6 +70,11 @@ std::string CodeClassDumper::dump(Type *cls, DumpConfig config) {
     }
 
     out << " {\n";
+
+    for (const auto &nestedType : cls->nestedTypes) {
+        out << "// Nested type\n";
+        out << dump(nestedType, config);
+    }
 
     Accessibility currentAccesibility = Accessibility::NONE;
 

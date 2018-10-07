@@ -56,6 +56,13 @@ Type *PDBExtractor::getType(std::string name) {
                 continue;
             }
 
+            if (pdbField.field_type == PDBFIELD_NESTTYPE) {
+                Type * nestedType = getType(type->name + "::" + pdbField.Member.name);
+                nestedType->name = pdbField.Member.name;
+                type->nestedTypes.push_back(nestedType);
+                continue;
+            }
+
             // Load fields
             Field * field = new Field(pdbField.Member.name, getReturnType(pdbField.Member.type_def), pdbField.Member.offset);
             field->accessibility = Accessibility::PUBLIC;
