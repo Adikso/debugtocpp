@@ -1,7 +1,7 @@
 #include <fcntl.h>
 #include <iostream>
-#include "ELFExtractor.hpp"
-#include "../../utils/utils.hpp"
+#include "extractor/elf/ELFExtractor.hpp"
+#include "utils/utils.hpp"
 
 using namespace retdec::demangler;
 

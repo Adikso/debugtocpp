@@ -1,8 +1,8 @@
 #ifndef DEBUGTOCPP_PDBEXTRACTOR_HPP
 #define DEBUGTOCPP_PDBEXTRACTOR_HPP
 
-#include "../Extractor.hpp"
-#include "../../common/DebugTypes.hpp"
+#include "extractor/Extractor.hpp"
+#include "common/DebugTypes.hpp"
 
 namespace debugtocpp {
 namespace pdb {

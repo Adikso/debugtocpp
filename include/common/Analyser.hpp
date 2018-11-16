@@ -2,7 +2,7 @@
 #define DEBUGTOCPP_ANALYSER_HPP
 
 #include "DebugTypes.hpp"
-#include "../dumper/ClassDumper.hpp"
+#include "dumper/ClassDumper.hpp"
 
 using namespace debugtocpp;
 

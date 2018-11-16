@@ -1,7 +1,7 @@
 #include <cstring>
 #include <list>
-#include "PDBExtractor.hpp"
-#include "../../utils/utils.hpp"
+#include "extractor/pdb/PDBExtractor.hpp"
+#include "utils/utils.hpp"
 
 namespace debugtocpp {
 namespace pdb {
@@ -58,7 +58,13 @@ Type *PDBExtractor::getType(std::string name) {
 
             if (pdbField.field_type == PDBFIELD_NESTTYPE) {
                 Type * nestedType = getType(type->name + "::" + pdbField.Member.name);
-                nestedType->name = pdbField.Member.name;
+                if (nestedType != nullptr) {
+                    nestedType->name = pdbField.Member.name;
+//                    type->nestedTypes.push_back(nestedType);
+                } else {
+                    nestedType = new Type(pdbField.Member.name);
+//                    type->nestedTypes.push_back(nestedType);
+                }
                 type->nestedTypes.push_back(nestedType);
                 continue;
             }

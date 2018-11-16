@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "Analyser.hpp"
+#include "common/Analyser.hpp"
 
 void Analyser::process(std::vector<Type *> &types) {
     for (auto &type : types) {

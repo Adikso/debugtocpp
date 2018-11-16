@@ -1,7 +1,7 @@
 #ifndef DEBUGTOCPP_ELFEXTRACTOR_HPP
 #define DEBUGTOCPP_ELFEXTRACTOR_HPP
 
-#include "../Extractor.hpp"
+#include "extractor/Extractor.hpp"
 #include "retdec/demangler/demangler.h"
 #include <libelfin/elf/elf++.hh>
 

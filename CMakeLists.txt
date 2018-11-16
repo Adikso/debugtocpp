@@ -40,9 +40,11 @@ set(DEBUGTOCPP_SOURCES
 
         src/extractor/dwarf/to_string.cc
 
-        src/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp src/extractor/pdb/PDBExtractor.hpp src/extractor/dwarf/DWARFExtractor.cpp src/extractor/dwarf/DWARFExtractor.hpp src/extractor/Extractor.hpp src/common/DebugTypes.hpp src/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp src/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp src/dumper/JsonClassDumper.hpp src/utils/json.hpp src/utils/utils.hpp src/extractor/elf/ELFExtractor.cpp src/extractor/elf/ELFExtractor.hpp src/debugextract.hpp src/common/Analyser.cpp src/common/Analyser.hpp)
+        include/utils/cxxopts.h src/extractor/pdb/PDBExtractor.cpp include/extractor/pdb/PDBExtractor.hpp src/extractor/dwarf/DWARFExtractor.cpp include/extractor/dwarf/DWARFExtractor.hpp include/extractor/Extractor.hpp include/common/DebugTypes.hpp include/dumper/ClassDumper.hpp src/dumper/CodeClassDumper.cpp include/dumper/CodeClassDumper.hpp src/dumper/JsonClassDumper.cpp include/dumper/JsonClassDumper.hpp include/utils/json.hpp include/utils/utils.hpp src/extractor/elf/ELFExtractor.cpp include/extractor/elf/ELFExtractor.hpp include/debugextract.hpp src/common/Analyser.cpp include/common/Analyser.hpp)
 
 add_executable(debugtocpp ${DEBUGTOCPP_SOURCES})
+target_include_directories(debugtocpp PUBLIC include)
+
 target_include_directories(debugtocpp PUBLIC retdec/include)
 target_include_directories(debugtocpp PUBLIC retdec/src/pdbparser)
 target_include_directories(debugtocpp PUBLIC retdec/src/demangler)

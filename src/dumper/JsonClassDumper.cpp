@@ -1,7 +1,7 @@
 #include <sstream>
-#include "../utils/json.hpp"
-#include "JsonClassDumper.hpp"
-#include "../utils/cxxopts.h"
+#include "utils/json.hpp"
+#include "dumper/JsonClassDumper.hpp"
+#include "utils/cxxopts.h"
 
 using json = nlohmann::json;
 

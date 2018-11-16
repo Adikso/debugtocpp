@@ -2,7 +2,7 @@
 #define DEBUGTOCPP_CODECLASSDUMPER_HPP
 
 #include "ClassDumper.hpp"
-#include "../utils/cxxopts.h"
+#include "utils/cxxopts.h"
 
 using namespace debugtocpp;
 

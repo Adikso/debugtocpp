@@ -3,7 +3,7 @@
 
 #include <string>
 #include <list>
-#include "../common/DebugTypes.hpp"
+#include "common/DebugTypes.hpp"
 
 using namespace debugtocpp::types;
 

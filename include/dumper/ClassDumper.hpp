@@ -2,7 +2,7 @@
 #define DEBUGTOCPP_CLASSDUMPER_H
 
 #include <string>
-#include "../common/DebugTypes.hpp"
+#include "common/DebugTypes.hpp"
 #include "../utils/cxxopts.h"
 
 using namespace debugtocpp::types;

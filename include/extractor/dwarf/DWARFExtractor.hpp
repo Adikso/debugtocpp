@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "../Extractor.hpp"
+#include "extractor/Extractor.hpp"
 #include <libelfin/elf/elf++.hh>
 #include <libelfin/dwarf/dwarf++.hh>
 

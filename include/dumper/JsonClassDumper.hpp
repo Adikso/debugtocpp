@@ -2,8 +2,8 @@
 #define DEBUGTOCPP_JSONCLASSDUMPER_HPP
 
 #include "ClassDumper.hpp"
-#include "../utils/cxxopts.h"
-#include "../utils/json.hpp"
+#include "utils/cxxopts.h"
+#include "utils/json.hpp"
 
 using namespace debugtocpp;
 using json = nlohmann::json;

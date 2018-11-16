@@ -1,7 +1,7 @@
 #include <sstream>
-#include "CodeClassDumper.hpp"
-#include "../utils/cxxopts.h"
-#include "../utils/utils.hpp"
+#include "dumper/CodeClassDumper.hpp"
+#include "utils/cxxopts.h"
+#include "utils/utils.hpp"
 
 // Should be rewritten
 namespace debugtocpp {

@@ -1,5 +1,5 @@
 #include <fcntl.h>
-#include "DWARFExtractor.hpp"
+#include "extractor/dwarf/DWARFExtractor.hpp"
 #include <iostream>
 
 namespace debugtocpp {
