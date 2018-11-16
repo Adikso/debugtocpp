@@ -5,7 +5,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "debugextract.hpp"
+#include "../include/debugextract.hpp"
 
 #include "common/Analyser.hpp"
 #include "common/DebugTypes.hpp"

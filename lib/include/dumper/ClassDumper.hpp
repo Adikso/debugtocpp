@@ -3,7 +3,7 @@
 
 #include <string>
 #include "common/DebugTypes.hpp"
-#include "../utils/cxxopts.h"
+#include "utils/cxxopts.h"
 
 using namespace debugtocpp::types;
 
